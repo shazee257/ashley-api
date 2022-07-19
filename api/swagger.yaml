@@ -1,0 +1,213 @@
+swagger: "2.0"
+info:
+  title: Ashley Furniture
+  version: 1.0.0
+schemes:
+  - http
+  - https
+paths:
+  #User APIs
+  /register:
+    post:
+      tags:
+        - User API
+      consumes:
+        - application/x-www-form-urlencoded
+      description: Registers a new user
+      parameters:
+        - name: first_name
+          description: first_name
+          in: formData
+          type: string
+          required: true
+        - name: last_name
+          description: last_name
+          in: formData
+          type: string
+          required: true
+        - name: phone_no
+          description: phone_no
+          in: formData
+          type: string
+          required: true
+        - name: email
+          description: email
+          in: formData
+          type: string
+          required: true
+        - name: password
+          description: password
+          in: formData
+          type: string
+          required: true
+      responses:
+        200:
+          description: 200 status registered
+        400:
+          description: Bad Request
+
+  /login:
+    post:
+      tags:
+        - User API
+      consumes:
+        - application/x-www-form-urlencoded
+      description: Login by email and password
+      parameters:
+        - name: email
+          description: email
+          in: formData
+          type: string
+          required: true
+        - name: password
+          description: password
+          in: formData
+          type: string
+          required: true
+      responses:
+        200:
+          description: 200 status with user & session detail
+        400:
+          description: Bad Request
+
+  /user:
+    get:
+      tags:
+        - User API
+      description: Return user info
+      parameters:
+        - name: Authorization
+          type: string
+          description: Access token
+          in: header
+          required: true
+      responses:
+        200:
+          description: 200 status with user info
+        400:
+          description: Bad Request
+
+  /users:
+    get:
+      tags:
+        - User API
+      description: Return all users
+      parameters:
+        - name: Authorization
+          type: string
+          description: Access token
+          in: header
+          required: true
+      responses:
+        200:
+          description: 200 status with array of all users
+        400:
+          description: Bad Request
+
+  /user/{id}:
+    delete:
+      tags:
+        - User API
+      description: Delete user by ID
+      parameters:
+        - name: Authorization
+          type: string
+          description: Access token
+          in: header
+          required: true
+        - name: id
+          type: string
+          description: id
+          in: path
+          required: true
+      responses:
+        200:
+          description: 200 status with deleted user
+        400:
+          description: Bad Request
+
+  /change-password:
+    post:
+      tags:
+        - User API
+      consumes:
+        - application/x-www-form-urlencoded
+      description: Change the password
+      parameters:
+        - name: Authorization
+          type: string
+          description: Access token for the players
+          in: header
+          required: true
+        - name: newPassword
+          type: string
+          description: Access token for the players
+          in: formData
+          required: true
+        - name: oldPassword
+          type: string
+          description: Access token for the players
+          in: formData
+          required: true
+      responses:
+        200:
+          description: 200 status and email sent with reset link
+        400:
+          description: Bad Request
+
+  /update-user:
+    patch:
+      tags:
+        - User API
+      consumes:
+        - application/x-www-form-urlencoded
+      description: Update the user info
+      parameters:
+        - name: Authorization
+          type: string
+          description: Access token
+          in: header
+          required: true
+        - name: first_name
+          type: string
+          description: first_name
+          in: formData
+          required: true
+        - name: last_name
+          type: string
+          description: last_name
+          in: formData
+          required: true
+        - name: email
+          type: string
+          description: email
+          in: formData
+          required: true
+        - name: phone_no
+          type: string
+          description: phone_no
+          in: formData
+          required: true
+        - name: alternet_phone_no
+          type: string
+          description: alternet_phone_no
+          in: formData
+          required: true
+        - name: password
+          type: string
+          description: password
+          in: formData
+          required: true
+      responses:
+        200:
+          description: 200 status - Update user details
+        400:
+          description: Bad Request
+
+responses: {}
+parameters: {}
+securityDefinitions: {}
+tags:
+  - name: User API
+  # - name: Product
+  # - name: Order
