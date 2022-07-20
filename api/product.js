@@ -6,14 +6,16 @@ const { imageUpload } = require('../utils/utils');
 const {
     createProduct,
     addVariant,
+    addFeature,
 
+    getProductBySlug,
     uploadImages,
     getProducts,
-    addFeature
 } = require('../controllers/product');
 
 router.post('/', createProduct);
 router.get('/', getProducts);
+router.get('/:slug', getProductBySlug);
 router.post('/:productId', addVariant); //add new variant to product
 
 router.post('/:productId/:variantId',

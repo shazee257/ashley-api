@@ -1,5 +1,7 @@
 const ProductModel = require('../models/product');
-const { thumbnail } = require('../utils/utils');
+const { multiThumbnail } = require('../utils/utils');
+
+
 
 exports.createProduct = async (req, res, next) => {
     try {
@@ -67,14 +69,16 @@ exports.addFeature = async (req, res, next) => {
         }
 
         const isVariableSize = product.is_variable;
-        const images = req.files;
+        const images = req.files.map((image) => image.filename);
+
+        multiThumbnail(req);
+
         const feature = {
             color: req.body.color,
             quantity: req.body.quantity,
             sku: req.body.sku,
-            images: images.map((image) => image.filename)
+            images: images,
         };
-
 
         // add multiple features to product sizes
         if (isVariableSize) {
@@ -93,6 +97,7 @@ exports.addFeature = async (req, res, next) => {
         // add feature to product with colors
         if (!isVariableSize) {
             product.colors.push(feature);
+            product.price = req.body.price;
         };
 
         await product.save();
@@ -128,4 +133,17 @@ exports.addVariant = async (req, res, next) => {
     }
 }
 
-// get product by id
+// get product by slug
+exports.getProductBySlug = async (req, res, next) => {
+    try {
+        const product = await ProductModel.findOne({ slug: req.params.slug, is_deleted: false })
+            // .populate('category_id brand_id store_id')
+            .sort({ createdAt: -1 });
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+        res.status(200).json({ success: true, product });
+    } catch (error) {
+        next(error);
+    }
+}

@@ -80,3 +80,14 @@ exports.thumbnail = async (req) => {
       .toFile(path.resolve(`src/assets/uploads/thumbs/${req.file.filename}`))
   }
 }
+
+exports.multiThumbnail = async (req) => {
+  if (req.files) {
+    await Promise.all(req.files.map(async (file) => {
+      await sharp(file.path, { failOnError: false })
+        .resize(128, 128)
+        .withMetadata()
+        .toFile(path.resolve(`src/assets/uploads/thumbs/${file.filename}`))
+    }))
+  }
+}
