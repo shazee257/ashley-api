@@ -24,21 +24,17 @@ router.get('/verify-token', verifyAccessToken);
 
 router.get('/:userId', getUser);
 
-router.get('/',
-    auth(["admin", "store", "customer"]), getUsers);
+router.get('/', getUsers);
 
 router.get('/admin/users', getAdminUsers);
 
 router.delete('/:userId', deleteUser);
 
-router.delete('/',
-    auth(["admin", "store", "customer"]), deleteUsers);
+router.delete('/', deleteUsers);
 
-router.post('/change-password/:userId',
-    auth(["admin", "store", "customer"]), changePassword);
+router.post('/change-password/:userId', changePassword);
 
-router.put('/:userId',
-    auth(["admin", "store", "customer"]), updateUser);
+router.put('/:userId', updateUser);
 
 router.post('/address/:userId', createAddress);
 router.put('/address/:addressId', updateAddress);
