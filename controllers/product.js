@@ -137,7 +137,7 @@ exports.addVariant = async (req, res, next) => {
 exports.getProductBySlug = async (req, res, next) => {
     try {
         const product = await ProductModel.findOne({ slug: req.params.slug, is_deleted: false })
-            // .populate('category_id brand_id store_id')
+            .populate('category_id brand_id store_id')
             .sort({ createdAt: -1 });
         if (!product) {
             return res.status(404).json({ success: false, message: 'Product not found' });
