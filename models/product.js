@@ -14,7 +14,7 @@ const productSchema = new Schema(
         store_id: { type: Schema.Types.ObjectId, ref: 'store', required: true },
 
         // for variable size product
-        is_variable: { type: Boolean, default: false },
+        is_variable: { type: Boolean, default: true },
 
         // for sizes and colors
         variants: [{
@@ -22,16 +22,16 @@ const productSchema = new Schema(
             price: Number,
             features: [{
                 color: String,
-                images: [String],
-                available: Number,
+                quantity: Number,
                 sku: String,
+                images: [String],
             }]
         }],
 
         // for only colors
         colors: [{
             color: String,
-            available: Number,
+            quantity: Number,
             sku: String,
             images: [String]
         }],

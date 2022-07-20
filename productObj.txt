@@ -5,13 +5,13 @@
     "category_id": "{{categoryId}}",
     "brand_id": "{{brandId}}",
     "store_id": "{{storeId}}",
-    "is_variable_product" : true,
+    "is_variable" : true,
     "variants": [
         { 
             "size": "small",
             "price": 110.00,
             "features" : [
-                { "color": "multi grey", "sku": "111104", "available": 25 },
+                { "color": "multi grey", "sku": "111104", "quantity": 25 },
                 { "color": "grey", "sku": "111105", "available": 20 }
             ]
         },
@@ -33,3 +33,7 @@
         }
     ]
 }
+
+ "color": "multi grey",
+    "sku": "111104",
+    "quantity": 25 
