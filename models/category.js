@@ -7,6 +7,7 @@ const categorySchema = new Schema(
     {
         title: { type: String, required: true, unique: true },
         slug: { type: String, slug: 'title', unique: true },
+        image: String,
         parent_id: String,
         is_deleted: { type: Boolean, default: false }
     },

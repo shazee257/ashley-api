@@ -1,8 +1,14 @@
 const CategoryModel = require('../models/category');
 const fetchCategories = require('../utils/utils');
+const { thumbnail } = require('../utils/utils');
 
 // create a new category
 exports.createCategory = async (req, res, next) => {
+    if (req.file) {
+        req.body.image = req.file.filename
+        thumbnail(req);
+    }
+
     try {
         const category = await CategoryModel.create(req.body);
         res.status(200).json({
@@ -28,6 +34,7 @@ exports.getCategory = async (req, res, next) => {
             _id: category._id,
             id: category._id,
             title: category.title,
+            image: category.image,
             slug: category.slug,
             parent_id: parentCategory ? parentCategory._id : '',
             parent_title: parentCategory ? parentCategory.title : '',
@@ -178,6 +185,23 @@ exports.updateCategory = async (req, res, next) => {
             success: true,
             category,
             message: 'Category updated successfully'
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// upload image
+exports.uploadImage = async (req, res, next) => {
+    try {
+        const category = await CategoryModel.findOne({ slug: req.params.slug, is_deleted: false });
+        if (req.file) {
+            category.image = req.file.filename;
+            await category.save();
+        }
+        res.status(200).json({
+            success: true,
+            category
         });
     } catch (error) {
         next(error);
