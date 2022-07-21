@@ -63,6 +63,7 @@ exports.getCategories = async (req, res, next) => {
                 _id: category._id,
                 id: category._id,
                 title: category.title,
+                image: category.image,
                 slug: category.slug,
                 parent_id: parentCategory ? parentCategory._id : '',
                 parent_title: parentCategory ? parentCategory.title : '',
