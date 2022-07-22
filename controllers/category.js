@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const CategoryModel = require('../models/category');
 const fetchCategories = require('../utils/utils');
 const { thumbnail } = require('../utils/utils');
@@ -28,8 +29,19 @@ exports.getCategory = async (req, res, next) => {
             { slug: req.params.slug }, { is_deleted: false }
         );
 
+        if (!category) {
+            res.status(404).json({
+                success: false,
+                message: 'Category not found'
+            });
+        }
+
+        const parent_id = category.parent_id ? mongoose.Types.ObjectId(category.parent_id) : null;
+
         // find category with parent category
-        const parentCategory = await CategoryModel.findOne({ _id: category.parent_id, is_deleted: false });
+        const parentCategory = await CategoryModel.findOne({ _id: parent_id });
+
+        // _id: category.parent_id, is_deleted: false });
         const categoryObj = {
             _id: category._id,
             id: category._id,
@@ -54,7 +66,7 @@ exports.getCategory = async (req, res, next) => {
 exports.getCategories = async (req, res, next) => {
     try {
         const categories = await CategoryModel.find({ is_deleted: false })
-            .populate('parent_id').sort({ createdAt: -1 });
+            .sort({ createdAt: -1 });
 
         // find each category with parent category
         const categoryList = categories.map((category) => {
@@ -67,6 +79,7 @@ exports.getCategories = async (req, res, next) => {
                 slug: category.slug,
                 parent_id: parentCategory ? parentCategory._id : '',
                 parent_title: parentCategory ? parentCategory.title : '',
+                parent_image: parentCategory ? parentCategory.image : '',
                 createdAt: category.createdAt,
             }
         });
@@ -197,11 +210,13 @@ exports.uploadImage = async (req, res, next) => {
     try {
         const category = await CategoryModel.findOne({ slug: req.params.slug, is_deleted: false });
         if (req.file) {
+            thumbnail(req);
             category.image = req.file.filename;
             await category.save();
         }
         res.status(200).json({
             success: true,
+            message: 'Image uploaded successfully',
             category
         });
     } catch (error) {
