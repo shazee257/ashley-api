@@ -1,6 +1,5 @@
 const { default: mongoose } = require('mongoose');
 const CategoryModel = require('../models/category');
-const fetchCategories = require('../utils/utils');
 const { thumbnail } = require('../utils/utils');
 
 // create a new category
@@ -36,10 +35,8 @@ exports.getCategory = async (req, res, next) => {
             });
         }
 
-        const parent_id = category.parent_id ? mongoose.Types.ObjectId(category.parent_id) : null;
-
         // find category with parent category
-        const parentCategory = await CategoryModel.findOne({ _id: parent_id });
+        const parentCategory = await CategoryModel.findOne({ _id: category?.parent_id });
 
         // _id: category.parent_id, is_deleted: false });
         const categoryObj = {
@@ -83,86 +80,6 @@ exports.getCategories = async (req, res, next) => {
                 createdAt: category.createdAt,
             }
         });
-
-        res.status(200).json({
-            success: true,
-            categories: categoryList
-        });
-    } catch (error) {
-        next(error);
-    }
-}
-
-
-// Get all categories with subcategories
-exports.getCategoriesWithSubcategories = async (req, res, next) => {
-    try {
-        const categories = await CategoryModel.find({ is_deleted: false });
-        const categoryList = fetchSubCategories(categories);
-        res.status(200).json({
-            success: true,
-            categories: categoryList,
-        });
-    } catch (error) {
-        next(error);
-    }
-    return console.log("test");
-}
-
-// function to fetch sub categories (recursive)
-function fetchSubCategories(categories, parentId = null) {
-    const categoryList = [];
-    let category;
-
-    if (parentId == null) {
-        category = categories.filter((cat) => cat.parent_id == undefined);
-    } else {
-        category = categories.filter((cat) => cat.parent_id == parentId);
-    }
-
-    for (let cate of category) {
-        categoryList.push({
-            _id: cate._id,
-            title: cate.title,
-            children: fetchSubCategories(categories, cate._id)
-        })
-    }
-    return categoryList;
-}
-
-
-// Function to fetch Sub-Categories from Category Id
-function fetchSubCategoriesFromParentId(categories, parentId) {
-    const categoryList = [];
-    let category;
-
-    category = categories.filter((cat) => cat.parent_id == parentId);
-
-    for (let cate of category) {
-        categoryList.push({
-            _id: cate._id,
-            title: cate.title,
-            children: fetchSubCategoriesFromParentId(categories, cate._id)
-        })
-    }
-    return categoryList;
-}
-
-// Get a category with subcategories
-exports.getCategoryWithSubcategories = async (req, res, next) => {
-    try {
-        const category = await CategoryModel.findOne({ _id: req.params.categoryId, is_deleted: false });
-        const categories = await CategoryModel.find({ is_deleted: false });
-        const subCategories = fetchSubCategoriesFromParentId(categories, req.params.categoryId);
-
-        let categoryList = [];
-        if (category) {
-            categoryList = [{
-                _id: category._id,
-                title: category.title,
-                children: subCategories
-            }];
-        }
 
         res.status(200).json({
             success: true,
@@ -218,6 +135,45 @@ exports.uploadImage = async (req, res, next) => {
             success: true,
             message: 'Image uploaded successfully',
             category
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// Get categories with subcategories
+exports.getCategoriesWithSubcategories = async (req, res, next) => {
+    try {
+        const categories = await CategoryModel.find({ is_deleted: false });
+        const parentCategories = categories.filter((category) => category.parent_id == '');
+
+        const categoryList = parentCategories.map((parentCategory) => {
+            const subCategories = categories.filter((category) => category.parent_id == parentCategory._id);
+            return {
+                _id: parentCategory._id,
+                id: parentCategory._id,
+                title: parentCategory.title,
+                image: parentCategory.image,
+                slug: parentCategory.slug,
+                createdAt: parentCategory.createdAt,
+                children: subCategories.map((subCategory) => {
+                    return {
+                        _id: subCategory._id,
+                        id: subCategory._id,
+                        title: subCategory.title,
+                        image: subCategory.image,
+                        slug: subCategory.slug,
+                        createdAt: subCategory.createdAt,
+                    }
+                }),
+            }
+        });
+
+
+        res.status(200).json({
+            success: true,
+            categories: categoryList,
+            message: 'Categories found successfully'
         });
     } catch (error) {
         next(error);

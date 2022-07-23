@@ -4,7 +4,7 @@ const { imageUpload } = require('../utils/utils');
 
 const {
     createCategory, getCategoriesWithSubcategories,
-    deleteCategory, updateCategory, getCategoryWithSubcategories,
+    deleteCategory, updateCategory,
     getCategory, getCategories,
     uploadImage
 
@@ -19,14 +19,11 @@ router.post('/upload-image/:slug', imageUpload.single('image'), uploadImage);
 // Get all categories
 router.get('/', getCategories);
 
-// Get a category with subcategories
-router.get('/fetch/:categoryId', getCategoryWithSubcategories);
-
-// Get all categories with subcategories
-router.get('/fetch', getCategoriesWithSubcategories);
-
 // Get a cateogry
 router.get('/:slug', getCategory);
+
+// Get categories with subcategories
+router.get('/fetch/subcategories', getCategoriesWithSubcategories);
 
 // Delete a category
 router.delete('/:slug', deleteCategory);

@@ -13,9 +13,8 @@ const productSchema = new Schema(
         brand_id: { type: Schema.Types.ObjectId, ref: 'brand', required: true },
         store_id: { type: Schema.Types.ObjectId, ref: 'store', required: true },
 
-        // for variable size product
+        // for variable product (sizes and colors)
         is_variable: { type: Boolean, default: true },
-
         // for sizes and colors
         variants: [{
             size: String,
@@ -29,13 +28,25 @@ const productSchema = new Schema(
         }],
 
         // for only colors
+        is_only_color: { type: Boolean, default: false },
         colors: [{
             color: String,
+            price: Number,
             quantity: Number,
             sku: String,
             images: [String]
         }],
-        price: Number,
+
+        // for only sizes
+        is_size_only: { type: Boolean, default: false },
+        sizes: [{
+            size: String,
+            price: Number,
+            quantity: Number,
+            sku: String,
+            images: [String]
+        }],
+
 
         is_addon: { type: Boolean, default: false },
         addon: { type: String, price: Number },
