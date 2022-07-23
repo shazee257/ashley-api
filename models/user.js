@@ -17,6 +17,8 @@ const userSchema = new Schema(
         address_ids: [{ type: Schema.Types.ObjectId, ref: 'address' }],
         is_deleted: { type: Boolean, default: false },
 
+        email_subscription: { type: Boolean, default: false },
+
         // for store user
         store_id: { type: Schema.Types.ObjectId, ref: 'store' },
 
