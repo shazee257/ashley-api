@@ -141,7 +141,7 @@ exports.uploadImage = async (req, res, next) => {
     }
 }
 
-// Get categories with subcategories
+// Get categories with subcategories (not used)
 exports.getCategoriesWithSubcategories = async (req, res, next) => {
     try {
         const categories = await CategoryModel.find({ is_deleted: false });
@@ -169,6 +169,52 @@ exports.getCategoriesWithSubcategories = async (req, res, next) => {
             }
         });
 
+        res.status(200).json({
+            success: true,
+            categories: categoryList,
+            message: 'Categories found successfully'
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// Get categories with subcategories recursively
+function getCategoriesWithSubcategories(categories, parentCategory) {
+    const subCategories = categories.filter((category) => category.parent_id == parentCategory._id);
+    if (subCategories.length > 0) {
+        parentCategory.children = subCategories.map((subCategory) => {
+            return {
+                _id: subCategory._id,
+                id: subCategory._id,
+                title: subCategory.title,
+                image: subCategory.image,
+                slug: subCategory.slug,
+                createdAt: subCategory.createdAt,
+                children: getCategoriesWithSubcategories(categories, subCategory)
+            }
+        });
+    }
+    return parentCategory.children;
+}
+
+// Get all categories with subcategories recursively
+exports.getCategoriesWithSubcategoriesRecursively = async (req, res, next) => {
+    try {
+        const categories = await CategoryModel.find({ is_deleted: false });
+        const parentCategories = categories.filter((category) => category.parent_id == '');
+
+        const categoryList = parentCategories.map((parentCategory) => {
+            return {
+                _id: parentCategory._id,
+                id: parentCategory._id,
+                title: parentCategory.title,
+                image: parentCategory.image,
+                slug: parentCategory.slug,
+                createdAt: parentCategory.createdAt,
+                children: getCategoriesWithSubcategories(categories, parentCategory)
+            }
+        });
 
         res.status(200).json({
             success: true,

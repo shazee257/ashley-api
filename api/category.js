@@ -3,7 +3,10 @@ const { imageUpload } = require('../utils/utils');
 // const { Auth}  = require('../middlewares/auth');
 
 const {
-    createCategory, getCategoriesWithSubcategories,
+    createCategory,
+    // getCategoriesWithSubcategories, (not used)
+
+    getCategoriesWithSubcategoriesRecursively,
     deleteCategory, updateCategory,
     getCategory, getCategories,
     uploadImage
@@ -23,7 +26,7 @@ router.get('/', getCategories);
 router.get('/:slug', getCategory);
 
 // Get categories with subcategories
-router.get('/fetch/subcategories', getCategoriesWithSubcategories);
+router.get('/fetch/subcategories', getCategoriesWithSubcategoriesRecursively);
 
 // Delete a category
 router.delete('/:slug', deleteCategory);
