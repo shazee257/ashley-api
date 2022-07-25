@@ -30,26 +30,15 @@ exports.getUser = async (req, res, next) => {
 // Get all users
 exports.getUsers = async (req, res, next) => {
     try {
-        const users = await UserModel.find({ is_deleted: false });
+        const users = await UserModel.find({ is_deleted: false })
+            .populate('store_id').sort({ created_at: -1 });
+
         res.status(200).json({ success: true, users });
     } catch (error) {
         next(error);
     }
 
 };
-
-// Get all admin users
-exports.getAdminUsers = async (req, res, next) => {
-    try {
-        const users = await UserModel.find({
-            role: 'admin', is_deleted: false
-        }).sort({ createdAt: -1 });
-        res.status(200).json({ success: true, users });
-    } catch (error) {
-        next(error);
-    }
-
-}
 
 // Register a user
 exports.registerUser = async (req, res, next) => {
@@ -448,11 +437,6 @@ exports.deleteAddress = async (req, res, next) => {
 // Upload Image & Thumbnails
 exports.uploadUserImage = async (req, res, next) => {
     if (req.file) {
-        if (req.fileValidationError) {
-            return res.status(400).json({
-                status: 400, message: req.fileValidationError,
-            });
-        }
         // let accessToken = req.get("Authorization");
         // if (accessToken) {
         //     const session = await SessionModel.findOne({
@@ -509,3 +493,19 @@ exports.verifyAccessToken = async (req, res, next) => {
         next(error);
     }
 }
+
+exports.createThumbnail = async (req, res, next) => {
+    if (req.file) {
+        thumbnail(req);
+        return res.status(200).json({
+            success: true,
+            message: 'Thumbnail created successfully',
+        });
+    }
+
+    return res.status(400).json({
+        status: 400,
+        message: "Please upload file.",
+    });
+}
+

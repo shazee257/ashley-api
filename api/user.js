@@ -4,11 +4,13 @@ const { imageUpload } = require('../utils/utils');
 
 const {
     registerUser, loginUser, forgotPassword, resetPassword, newPassword,
-    changePassword, getUser, getUsers, getAdminUsers,
+    changePassword, getUser, getUsers,
     deleteUser, deleteUsers, updateUser,
     createAddress, updateAddress, getAddresses, deleteAddress,
     uploadUserImage,
-    verifyAccessToken
+    verifyAccessToken,
+
+    createThumbnail
 
 } = require('../controllers/user');
 
@@ -26,8 +28,6 @@ router.get('/:userId', getUser);
 
 router.get('/', getUsers);
 
-router.get('/admin/users', getAdminUsers);
-
 router.delete('/:userId', deleteUser);
 
 router.delete('/', deleteUsers);
@@ -41,6 +41,10 @@ router.put('/address/:addressId', updateAddress);
 router.get('/address/:userId', getAddresses);
 router.delete('/address/:addressId', deleteAddress);
 router.post('/:userId/upload-image', imageUpload.single('image'), uploadUserImage);
+
+
+
+router.post('/image/create-thumbnail', imageUpload.single('image'), createThumbnail);
 
 
 module.exports = router;
