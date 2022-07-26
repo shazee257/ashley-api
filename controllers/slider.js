@@ -5,7 +5,7 @@ const { thumbnail } = require('../utils/utils');
 exports.createSlider = async (req, res, next) => {
     if (req.file) {
         req.body.image = req.file.filename
-        thumbnail(req);
+        thumbnail(req, "slider");
 
         try {
             const slider = await SliderModel.create(req.body);
@@ -87,7 +87,7 @@ exports.deleteSliderById = async (req, res, next) => {
 exports.uploadSliderImage = async (req, res, next) => {
     if (req.file) {
         req.body.image = req.file.filename
-        thumbnail(req);
+        thumbnail(req, "slider");
 
         try {
             const slider = await SliderModel.findOneAndUpdate(

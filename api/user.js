@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const auth = require('../middlewares/authMiddleware');
-const { imageUpload } = require('../utils/utils');
+// const auth = require('../middlewares/authMiddleware');
+const { upload } = require('../utils/utils');
 
 const {
     registerUser, loginUser, forgotPassword, resetPassword, newPassword,
@@ -16,7 +16,7 @@ const {
 
 // const use = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
-router.post('/register', imageUpload.single('image'), registerUser);
+router.post('/register', upload("users").single('image'), registerUser);
 router.post('/login', loginUser);
 router.post('/forgot-password', forgotPassword);
 router.get('/reset-password/:resetToken', resetPassword);
@@ -40,11 +40,11 @@ router.post('/address/:userId', createAddress);
 router.put('/address/:addressId', updateAddress);
 router.get('/address/:userId', getAddresses);
 router.delete('/address/:addressId', deleteAddress);
-router.post('/:userId/upload-image', imageUpload.single('image'), uploadUserImage);
+router.post('/:userId/upload-image', upload("users").single('image'), uploadUserImage);
 
 
 
-router.post('/image/create-thumbnail', imageUpload.single('image'), createThumbnail);
+router.post('/image/create-thumbnail', upload("users").single('image'), createThumbnail);
 
 
 module.exports = router;

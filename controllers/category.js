@@ -1,4 +1,3 @@
-const { default: mongoose } = require('mongoose');
 const CategoryModel = require('../models/category');
 const { thumbnail } = require('../utils/utils');
 
@@ -6,7 +5,7 @@ const { thumbnail } = require('../utils/utils');
 exports.createCategory = async (req, res, next) => {
     if (req.file) {
         req.body.image = req.file.filename
-        thumbnail(req);
+        thumbnail(req, "categories");
     }
 
     try {
@@ -63,7 +62,7 @@ exports.getCategory = async (req, res, next) => {
 exports.getCategories = async (req, res, next) => {
     try {
         const categories = await CategoryModel.find({ is_deleted: false })
-            .sort({ createdAt: -1 });
+            .sort({ title: 1 });
 
         // find each category with parent category
         const categoryList = categories.map((category) => {
@@ -123,11 +122,11 @@ exports.updateCategory = async (req, res, next) => {
 }
 
 // upload image
-exports.uploadImage = async (req, res, next) => {
+exports.uploadCategoryImage = async (req, res, next) => {
     try {
         const category = await CategoryModel.findOne({ slug: req.params.slug, is_deleted: false });
         if (req.file) {
-            thumbnail(req);
+            thumbnail(req, "categories");
             category.image = req.file.filename;
             await category.save();
         }

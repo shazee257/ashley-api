@@ -67,7 +67,7 @@ exports.registerUser = async (req, res, next) => {
 
     if (req.file) {
         req.body.image = req.file.filename
-        thumbnail(req);
+        thumbnail(req, "users");
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -450,7 +450,7 @@ exports.uploadUserImage = async (req, res, next) => {
         //         });
         //     }
         try {
-            thumbnail(req);
+            thumbnail(req, "users");
 
             const user = await UserModel.findOneAndUpdate(
                 { _id: req.params.userId, is_deleted: false },
@@ -500,7 +500,7 @@ exports.verifyAccessToken = async (req, res, next) => {
 
 exports.createThumbnail = async (req, res, next) => {
     if (req.file) {
-        thumbnail(req);
+        thumbnail(req, "users");
         return res.status(200).json({
             success: true,
             message: 'Thumbnail created successfully',

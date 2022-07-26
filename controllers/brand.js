@@ -10,7 +10,7 @@ exports.createBrand = async (req, res, next) => {
 
     if (req.file) {
         brandData.image = req.file.filename
-        thumbnail(req);
+        thumbnail(req, "brands");
     };
 
     try {
@@ -39,7 +39,7 @@ exports.uploadImage = async (req, res, next) => {
                 { slug: req.params.slug, is_deleted: false },
                 { image: req.file.filename }
             );
-            thumbnail(req);
+            thumbnail(req, "brands");
 
         } catch (error) {
             next(error);
@@ -56,19 +56,6 @@ exports.uploadImage = async (req, res, next) => {
         message: "Please upload file.",
     });
 }
-
-// get a brand 
-// exports.getBrandById = async (req, res, next) => {
-//     try {
-//         const brand = await BrandModel.findById(req.params.brandId);
-//         res.status(200).json({
-//             success: true,
-//             brand
-//         });
-//     } catch (error) {
-//         next(error);
-//     }
-// }
 
 // get a brand by slug
 exports.getBrandBySlug = async (req, res, next) => {
@@ -87,7 +74,7 @@ exports.getBrandBySlug = async (req, res, next) => {
 exports.getAllBrands = async (req, res, next) => {
     try {
         const brands = await BrandModel.find({ is_deleted: false })
-            .sort({ createdAt: -1 });
+            .sort({ title: 1 });
         res.status(200).json({
             success: true,
             brands

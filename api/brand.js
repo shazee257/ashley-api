@@ -1,17 +1,15 @@
 const router = require('express').Router();
-// const { isAuth } = require('../middlewares/auth');
-const { imageUpload } = require('../utils/utils');
+const { upload } = require('../utils/utils');
 
 const {
     createBrand, uploadImage,
     getBrandBySlug,
-    // getBrandById,
     getAllBrands,
     updateBrand, deleteBrand
 } = require('../controllers/brand');
 
-router.post('/', imageUpload.single('image'), createBrand);
-router.post('/upload-image/:slug', imageUpload.single('image'), uploadImage);
+router.post('/', upload("brands").single('image'), createBrand);
+router.post('/upload-image/:slug', upload("brands").single('image'), uploadImage);
 
 router.get('/', getAllBrands);
 router.get('/:slug', getBrandBySlug);

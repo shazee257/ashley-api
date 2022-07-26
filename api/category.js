@@ -1,23 +1,20 @@
 const router = require('express').Router();
-const { imageUpload } = require('../utils/utils');
-// const { Auth}  = require('../middlewares/auth');
+const { upload } = require('../utils/utils');
 
 const {
     createCategory,
-    // getCategoriesWithSubcategories, (not used)
-
     getCategoriesWithSubcategoriesRecursively,
     deleteCategory, updateCategory,
     getCategory, getCategories,
-    uploadImage
+    uploadCategoryImage
 
 } = require('../controllers/category');
 
 // Add a category
-router.post('/', imageUpload.single('image'), createCategory);
+router.post('/', upload("categories").single("image"), createCategory);
 
 // upload image
-router.post('/upload-image/:slug', imageUpload.single('image'), uploadImage);
+router.post('/upload-image/:slug', upload("categories").single('image'), uploadCategoryImage);
 
 // Get all categories
 router.get('/', getCategories);

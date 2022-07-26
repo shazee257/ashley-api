@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { imageUpload } = require('../utils/utils');
+const { upload } = require('../utils/utils');
 
 const {
     createStore,
@@ -10,8 +10,8 @@ const {
     deleteStore
 } = require('../controllers/store');
 
-router.post('/', imageUpload.single('banner'), createStore);
-router.post('/upload-image/:slug', imageUpload.single('banner'), uploadImage);
+router.post('/', upload("stores").single('banner'), createStore);
+router.post('/upload-image/:slug', upload("stores").single('banner'), uploadImage);
 
 router.get('/', getAllStores);
 router.get('/:slug', getStore);

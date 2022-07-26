@@ -5,7 +5,7 @@ const { thumbnail } = require('../utils/utils');
 exports.createStore = async (req, res, next) => {
     if (req.file) {
         req.body.banner = req.file.filename
-        thumbnail(req);
+        thumbnail(req, "stores");
     }
 
     try {
@@ -35,7 +35,7 @@ exports.uploadImage = async (req, res, next) => {
                 { banner: req.file.filename },
                 { new: true }
             );
-            thumbnail(req);
+            thumbnail(req, "stores");
 
             res.status(200).json({
                 success: true,
@@ -70,7 +70,7 @@ exports.getStore = async (req, res, next) => {
 exports.getAllStores = async (req, res, next) => {
     try {
         const stores = await StoreModel.find({ is_deleted: false })
-            .sort({ createdAt: -1 });
+            .sort({ title: 1 });
         res.status(200).json({
             success: true,
             stores
