@@ -10,28 +10,34 @@ exports.addToCart = async (req, res, next) => {
         } = req.body;
 
         const cart = await CartModel.findOne({ user_id });
+        let cartTotal = 0;
 
         if (cart) {
             const product = cart.products.find((p) => p.sku === sku);
 
             if (product) {
                 product.quantity += Number(quantity);
-                product.price = product.quantity * price;
+                product.total = product.quantity * Number(price);
             } else {
                 cart.products.push({
                     product_id,
-                    title, size, color, sku, price, quantity, image
+                    title, size, color, sku, price, quantity, image,
+                    total: Number(quantity) * Number(price),
+
                 });
             }
-
+            cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
             await cart.save();
         } else {
             const newCart = new CartModel({
                 user_id,
                 products: [{
                     product_id,
-                    title, size, color, sku, price, quantity, image
+                    title, size, color, sku, price, quantity, image,
+                    total: Number(quantity) * Number(price),
+
                 }],
+                cartTotal: total
             });
 
             await newCart.save();
@@ -71,7 +77,8 @@ exports.updateCart = async (req, res, next) => {
 
         if (cart) {
             cart.products[index].quantity = Number(quantity);
-            cart.products[index].price *= cart.products[index].quantity;
+            cart.products[index].total = cart.products[index].price * cart.products[index].quantity;
+            cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
 
             await cart.save();
 
@@ -98,6 +105,7 @@ exports.removeCartItem = async (req, res, next) => {
 
         if (cart) {
             cart.products.splice(index, 1);
+            cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
 
             await cart.save();
 
