@@ -28,7 +28,7 @@ const productSchema = new Schema(
         }],
 
         // for only colors
-        is_only_color: { type: Boolean, default: false },
+        is_color_only: { type: Boolean, default: false },
         colors: [{
             color: String,
             price: Number,

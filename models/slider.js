@@ -7,7 +7,6 @@ const sliderSchema = new Schema(
         sub_title: String,
         description: String,
         image: { type: String, required: true },
-        enabled: { type: Boolean, default: true },
         is_deleted: { type: Boolean, default: false }
     },
     { timestamps: true }

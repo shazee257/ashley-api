@@ -488,7 +488,11 @@ exports.verifyAccessToken = async (req, res, next) => {
             });
         }
 
-        res.status(200).json({ success: true, user: session.user_id });
+        res.status(200).json({
+            success: true,
+            user: session.user_id
+        });
+
     } catch (error) {
         next(error);
     }

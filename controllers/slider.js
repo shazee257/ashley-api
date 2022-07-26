@@ -109,21 +109,3 @@ exports.uploadSliderImage = async (req, res, next) => {
     }
 }
 
-// make slider active
-exports.sliderEnableDisableById = async (req, res, next) => {
-    let status = req.body.status;
-
-    return console.log("status", status);
-    try {
-        const slider = await SliderModel.findOneAndUpdate(
-            { _id: req.params.id, is_deleted: false },
-            { enabled: status }, { new: true });
-        res.status(200).json({
-            success: true,
-            slider,
-            message: 'Slider status is updated!',
-        });
-    } catch (error) {
-        next(error);
-    }
-}
