@@ -23,12 +23,6 @@ exports.createStore = async (req, res, next) => {
 // upload image and update (delete image file if exists)
 exports.uploadImage = async (req, res, next) => {
     if (req.file) {
-        if (req.fileValidationError) {
-            return res.status(400).json({
-                status: 400, message: req.fileValidationError,
-            });
-        }
-
         try {
             const store = await StoreModel.findOneAndUpdate(
                 { slug: req.params.slug, is_deleted: false },
@@ -37,7 +31,7 @@ exports.uploadImage = async (req, res, next) => {
             );
             thumbnail(req, "stores");
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 store,
                 message: 'Image uploaded successfully',

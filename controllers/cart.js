@@ -4,14 +4,14 @@ const CartModel = require('../models/cart');
 exports.addToCart = async (req, res, next) => {
     try {
         const {
-            user_id,
             product_id,
             title, size, color, sku, price, quantity, image
         } = req.body;
 
-        const cart = await CartModel.findOne({ user_id });
-        let cartTotal = 0;
+        const cart = await CartModel.findOne({ user_id: req.params.userId });
+        let total = 0;
 
+        // return console.log(cart);   
         if (cart) {
             const product = cart.products.find((p) => p.sku === sku);
 
@@ -30,7 +30,7 @@ exports.addToCart = async (req, res, next) => {
             await cart.save();
         } else {
             const newCart = new CartModel({
-                user_id,
+                user_id: req.params.userId,
                 products: [{
                     product_id,
                     title, size, color, sku, price, quantity, image,

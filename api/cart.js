@@ -8,7 +8,7 @@ const {
     deleteCart,
 } = require('../controllers/cart');
 
-router.post('/', addToCart);
+router.post('/:userId', addToCart);
 router.get('/:userId', getCart);
 router.put('/:userId', updateCart);
 router.put('/:userId/remove-item', removeCartItem);
