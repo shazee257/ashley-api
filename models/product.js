@@ -18,7 +18,8 @@ const productSchema = new Schema(
         // for sizes and colors
         variants: [{
             size: String,
-            price: Number,
+            sale_price: Number,
+            actual_price: Number,
             features: [{
                 color: String,
                 quantity: Number,
@@ -31,7 +32,8 @@ const productSchema = new Schema(
         is_color_only: { type: Boolean, default: false },
         colors: [{
             color: String,
-            price: Number,
+            sale_price: Number,
+            actual_price: Number,
             quantity: Number,
             sku: String,
             images: [String]
@@ -41,7 +43,8 @@ const productSchema = new Schema(
         is_size_only: { type: Boolean, default: false },
         sizes: [{
             size: String,
-            price: Number,
+            sale_price: Number,
+            actual_price: Number,
             quantity: Number,
             sku: String,
             images: [String]

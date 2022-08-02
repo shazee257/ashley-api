@@ -1,8 +1,6 @@
 const ProductModel = require('../models/product');
 const { multiThumbnail } = require('../utils/utils');
 
-
-
 exports.createProduct = async (req, res, next) => {
     try {
         const product = await ProductModel.create(req.body);
@@ -118,7 +116,11 @@ exports.addVariant = async (req, res, next) => {
         const product = await ProductModel.findById(req.params.productId);
         if (!product) res.status(404).json({ success: false, message: 'Product not found' });
 
-        const variant = { size: req.body.size, price: req.body.price };
+        const variant = {
+            size: req.body.size,
+            sale_price: req.body.sale_price,
+            actual_price: req.body.actual_price,
+        };
 
         // check variant is already exist or not
         const isExist = product.variants.find((v) => v.size === variant.size);
@@ -147,7 +149,7 @@ exports.getProductBySlug = async (req, res, next) => {
         next(error);
     }
 
-    
+
 
 
 
