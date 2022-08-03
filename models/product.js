@@ -54,6 +54,8 @@ const productSchema = new Schema(
         is_addon: { type: Boolean, default: false },
         addon: { type: String, price: Number },
 
+        // discount in percentage
+        discount: { type: Number, default: 0 },
         // online_only: { type: Boolean, default: false },
         is_deleted: { type: Boolean, default: false }
     },

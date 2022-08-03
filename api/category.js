@@ -3,9 +3,12 @@ const { upload } = require('../utils/utils');
 
 const {
     createCategory,
-    getCategoriesWithSubcategoriesRecursively,
+    getCategoriesWithSubcategories,
+    getCategoryWithItsSubCategories,
     deleteCategory, updateCategory,
-    getCategory, getCategories,
+
+    //getCategory,
+    getCategories,
     uploadCategoryImage
 
 } = require('../controllers/category');
@@ -20,10 +23,10 @@ router.post('/upload-image/:slug', upload("categories").single('image'), uploadC
 router.get('/', getCategories);
 
 // Get a cateogry
-router.get('/:slug', getCategory);
+router.get('/:slug', getCategoryWithItsSubCategories);
 
 // Get categories with subcategories
-router.get('/fetch/subcategories', getCategoriesWithSubcategoriesRecursively);
+router.get('/fetch/subcategories', getCategoriesWithSubcategories);
 
 // Delete a category
 router.delete('/:slug', deleteCategory);
