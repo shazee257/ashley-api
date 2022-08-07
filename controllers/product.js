@@ -2,8 +2,26 @@ const ProductModel = require('../models/product');
 const { multiThumbnail } = require('../utils/utils');
 
 exports.createProduct = async (req, res, next) => {
+
+    const title = req.body.title;
+    const store_id = req.body.store_id;
+    const category_id = req.body.category_id;
+    const brand_id = req.body.brand_id;
+
+    const is_sizes_with_colors = req.body.isSizes && req.body.isColors;
+    const is_colors_only = req.body.isColors && !req.body.isSizes;
+    const is_sizes_only = req.body.isSizes && !req.body.isColors;
+
     try {
-        const product = await ProductModel.create(req.body);
+        const product = await ProductModel.create({
+            title,
+            store_id,
+            category_id,
+            brand_id,
+            is_sizes_with_colors,
+            is_colors_only,
+            is_sizes_only,
+        });
         res.status(200).json({ success: true, product });
     } catch (error) {
         next(error);
@@ -69,7 +87,7 @@ exports.addFeature = async (req, res, next) => {
         const isVariableSize = product.is_variable;
         const images = req.files.map((image) => image.filename);
 
-        multiThumbnail(req);
+        multiThumbnail(req, "products");
 
         const feature = {
             color: req.body.color,

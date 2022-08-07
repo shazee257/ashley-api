@@ -274,7 +274,7 @@ exports.getCategoryWithItsSubCategories = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            categories: categoryList,
+            category: categoryList,
             message: 'Categories found successfully'
         });
     } catch (error) {
