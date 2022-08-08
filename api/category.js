@@ -8,6 +8,7 @@ const {
     deleteCategory, updateCategory,
 
     getCategory,
+    getCategoryBySlug,
     getCategories,
     uploadCategoryImage
 
@@ -17,7 +18,7 @@ const {
 router.post('/', upload("categories").single("image"), createCategory);
 
 // upload image
-router.post('/upload-image/:slug', upload("categories").single('image'), uploadCategoryImage);
+router.post('/upload-image/:id', upload("categories").single('image'), uploadCategoryImage);
 
 // Get all categories
 router.get('/', getCategories);
@@ -25,7 +26,7 @@ router.get('/', getCategories);
 // Get a cateogry
 // router.get('/:slug', getCategoryWithItsSubCategories);
 router.get('/:id', getCategory);
-
+router.get('/slug/:slug', getCategoryBySlug);
 // router.get('/c/:id', getCategory);
 
 // Get categories with subcategories

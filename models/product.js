@@ -50,16 +50,16 @@ const productSchema = new Schema(
 
         // for only sizes
         is_sizes_only: { type: Boolean, default: false },
-        sizes: [{
-            size: String,
-            sale_price: Number,
-            purchase_price: Number,
-            quantity: Number,
-            sku: String,
-            images: [String],
-            detail_1: String,
-            detail_2: String,
-        }],
+        // sizes: [{
+        //     size: String,
+        //     sale_price: Number,
+        //     purchase_price: Number,
+        //     quantity: Number,
+        //     sku: String,
+        //     images: [String],
+        //     detail_1: String,
+        //     detail_2: String,
+        // }],
 
 
         is_addon: { type: Boolean, default: false },

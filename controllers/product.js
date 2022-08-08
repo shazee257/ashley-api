@@ -1,15 +1,29 @@
 const ProductModel = require('../models/product');
+const CategoryModel = require('../models/category');
 const { multiThumbnail } = require('../utils/utils');
 
 exports.createProduct = async (req, res, next) => {
+    const category = await CategoryModel.findById(req.body.category_id);
+
+    let is_sizes_with_colors = false, is_colors_only = false, is_sizes_only = false;
+    if (category.attributes.includes("Size") && category.attributes.includes("Color")) {
+        is_sizes_with_colors = true;
+    } else if (category.attributes.includes("Color") && !category.attributes.includes("Size")) {
+        is_colors_only = true;
+    } else if (category.attributes.includes("Size") && !category.attributes.includes("Color")) {
+        is_sizes_only = true;
+    }
+
+    if (!is_sizes_with_colors && !is_colors_only && !is_sizes_only) {
+        return res.status(400).json({
+            message: "Product must have at least one attribute"
+        });
+    }
+
     const title = req.body.title;
     const store_id = req.body.store_id;
     const category_id = req.body.category_id;
     const brand_id = req.body.brand_id;
-
-    const is_sizes_with_colors = req.body.isSizes && req.body.isColors;
-    const is_colors_only = req.body.isColors && !req.body.isSizes;
-    const is_sizes_only = req.body.isSizes && !req.body.isColors;
 
     try {
         const product = await ProductModel.create({
@@ -21,7 +35,11 @@ exports.createProduct = async (req, res, next) => {
             is_colors_only,
             is_sizes_only,
         });
-        res.status(200).json({ success: true, product });
+        res.status(200).json({
+            success: true,
+            message: 'Product created successfully',
+            product
+        });
     } catch (error) {
         next(error);
     }
