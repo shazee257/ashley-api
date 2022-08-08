@@ -2,7 +2,6 @@ const ProductModel = require('../models/product');
 const { multiThumbnail } = require('../utils/utils');
 
 exports.createProduct = async (req, res, next) => {
-
     const title = req.body.title;
     const store_id = req.body.store_id;
     const category_id = req.body.category_id;
@@ -126,7 +125,7 @@ exports.addFeature = async (req, res, next) => {
 // add variant to product
 exports.addVariant = async (req, res, next) => {
     // check empty fields
-    if (!req.body.size || !req.body.price) {
+    if (!req.body.size || !req.body.sale_price) {
         return res.status(400).json({ success: false, message: 'Size and price are required' });
     }
 
@@ -134,11 +133,16 @@ exports.addVariant = async (req, res, next) => {
         const product = await ProductModel.findById(req.params.productId);
         if (!product) res.status(404).json({ success: false, message: 'Product not found' });
 
-        const variant = {
-            size: req.body.size,
-            sale_price: req.body.sale_price,
-            actual_price: req.body.actual_price,
-        };
+        let variant;
+        if (product.is_sizes_with_colors) {
+            variant = {
+                size: req.body.size,
+                sale_price: req.body.sale_price,
+                purchase_price: req.body.purchase_price,
+                detail_1: req.body.detail_1,
+                detail_2: req.body.detail_2,
+            };
+        }
 
         // check variant is already exist or not
         const isExist = product.variants.find((v) => v.size === variant.size);
@@ -166,13 +170,84 @@ exports.getProductBySlug = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-
-
-
-
-
-
-
 }
 
+// get product variants by product id
+exports.getProductVariants = async (req, res, next) => {
+    try {
+        const product = await ProductModel.findById(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
 
+        if (product.is_sizes_with_colors) {
+            const variants = product.variants.map((v) => {
+                return {
+                    detail_1: v.detail_1,
+                    detail_2: v.detail_2,
+                    size: v.size,
+                    sale_price: v.sale_price,
+                    purchase_price: v.purchase_price,
+                    features: v.features
+                }
+            });
+            res.status(200).json({ success: true, variants });
+
+        }
+        // res.status(200).json({ success: true, product });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// update product by id
+exports.updateProduct = async (req, res, next) => {
+    try {
+        const product = await ProductModel.findById(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        product.title = req.body.title;
+        product.category_id = req.body.category_id;
+        product.brand_id = req.body.brand_id;
+        product.store_id = req.body.store_id;
+
+        await product.save();
+        res.status(200).json({ success: true, product });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// delete product by id
+exports.deleteProduct = async (req, res, next) => {
+    try {
+        const product = await ProductModel.findById(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        product.is_deleted = true;
+        await product.save();
+        res.status(200).json({ success: true, product });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// delete variant by id
+exports.deleteVariant = async (req, res, next) => {
+    try {
+        const product = await ProductModel.findById(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        product.variants = product.variants.filter((v) => v._id.toString() !== req.params.variantId);
+        await product.save();
+        res.status(200).json({ success: true, product });
+    } catch (error) {
+        next(error);
+    }
+}

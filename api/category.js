@@ -7,7 +7,7 @@ const {
     getCategoryWithItsSubCategories,
     deleteCategory, updateCategory,
 
-    //getCategory,
+    getCategory,
     getCategories,
     uploadCategoryImage
 
@@ -24,6 +24,8 @@ router.get('/', getCategories);
 
 // Get a cateogry
 router.get('/:slug', getCategoryWithItsSubCategories);
+
+router.get('/c/:slug', getCategory);
 
 // Get categories with subcategories
 router.get('/fetch/subcategories', getCategoriesWithSubcategories);

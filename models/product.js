@@ -15,38 +15,45 @@ const productSchema = new Schema(
 
         // for variable product (sizes and colors)
         is_sizes_with_colors: { type: Boolean, default: false },
-        // for sizes and colors
-        variants: [{
-            detail_1: String,
-            detail_2: String,
-            size: String,
-            sale_price: Number,
-            actual_price: Number,
-            features: [{
+
+        variants:
+            // for sizes and colors
+            [{
+                detail_1: String,
+                detail_2: String,
+                size: String,
+                sale_price: Number,
+                purchase_price: Number,
+                features: [{
+                    color: String,
+                    quantity: Number,
+                    sku: String,
+                    images: [String],
+                }],
+                // for color only
                 color: String,
                 quantity: Number,
                 sku: String,
                 images: [String],
-            }]
-        }],
+            }],
 
         // for only colors
         is_colors_only: { type: Boolean, default: false },
-        colors: [{
-            color: String,
-            sale_price: Number,
-            actual_price: Number,
-            quantity: Number,
-            sku: String,
-            images: [String]
-        }],
+        // colors: [{
+        //     color: String,
+        //     sale_price: Number,
+        //     purchase_price: Number,
+        //     quantity: Number,
+        //     sku: String,
+        //     images: [String]
+        // }],
 
         // for only sizes
         is_sizes_only: { type: Boolean, default: false },
         sizes: [{
             size: String,
             sale_price: Number,
-            actual_price: Number,
+            purchase_price: Number,
             quantity: Number,
             sku: String,
             images: [String],

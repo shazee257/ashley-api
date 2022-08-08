@@ -50,6 +50,7 @@ exports.getCategory = async (req, res, next) => {
             slug: category.slug,
             parent_id: parentCategory ? parentCategory._id : '',
             parent_title: parentCategory ? parentCategory.title : '',
+            parent_image: parentCategory ? parentCategory.image : '',
             createdAt: category.createdAt,
         }
 

@@ -4,10 +4,18 @@ const { upload } = require('../utils/utils');
 
 const {
     createProduct,
+    // getProductVariants,
     addVariant,
+    deleteVariant,
+
     addFeature,
 
     getProductBySlug,
+    deleteProduct,
+
+    updateProduct,
+
+
     uploadImages,
     getProducts,
 } = require('../controllers/product');
@@ -15,6 +23,11 @@ const {
 router.post('/', createProduct);
 router.get('/', getProducts);
 router.get('/:slug', getProductBySlug);
+router.put('/:productId', updateProduct);
+router.delete('/:productId', deleteProduct);
+router.delete('/:productId/:variantId', deleteVariant);
+
+// router.get('/v/:productId', getProductVariants);
 router.post('/:productId', addVariant); //add new variant to product
 
 router.post('/:productId/:variantId',
