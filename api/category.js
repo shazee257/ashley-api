@@ -23,9 +23,10 @@ router.post('/upload-image/:slug', upload("categories").single('image'), uploadC
 router.get('/', getCategories);
 
 // Get a cateogry
-router.get('/:slug', getCategoryWithItsSubCategories);
+// router.get('/:slug', getCategoryWithItsSubCategories);
+router.get('/:id', getCategory);
 
-router.get('/c/:slug', getCategory);
+// router.get('/c/:id', getCategory);
 
 // Get categories with subcategories
 router.get('/fetch/subcategories', getCategoriesWithSubcategories);
@@ -34,7 +35,7 @@ router.get('/fetch/subcategories', getCategoriesWithSubcategories);
 router.delete('/:slug', deleteCategory);
 
 // Update a category
-router.put('/:slug', updateCategory);
+router.put('/:id', updateCategory);
 
 
 module.exports = router;

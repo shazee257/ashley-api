@@ -8,8 +8,15 @@ exports.createCategory = async (req, res, next) => {
         thumbnail(req, "categories");
     }
 
+    const categoryObj = {
+        title: req.body.title,
+        image: req.body.image ? req.body.image : "",
+        parent_id: req.body.parent_id ? req.body.parent_id : "",
+        attributes: req.body.attributes ? req.body.attributes.split(',') : [],
+    }
+
     try {
-        const category = await CategoryModel.create(req.body);
+        const category = await CategoryModel.create(categoryObj);
         res.status(200).json({
             success: true,
             message: 'Category created successfully',
@@ -24,7 +31,7 @@ exports.createCategory = async (req, res, next) => {
 exports.getCategory = async (req, res, next) => {
     try {
         const category = await CategoryModel.findOne(
-            { slug: req.params.slug }, { is_deleted: false }
+            { _id: req.params.id }, { is_deleted: false }
         );
 
         if (!category) {
@@ -51,6 +58,7 @@ exports.getCategory = async (req, res, next) => {
             parent_id: parentCategory ? parentCategory._id : '',
             parent_title: parentCategory ? parentCategory.title : '',
             parent_image: parentCategory ? parentCategory.image : '',
+            attributes: category.attributes,
             createdAt: category.createdAt,
         }
 
@@ -112,10 +120,21 @@ exports.deleteCategory = async (req, res, next) => {
 // Update a category
 exports.updateCategory = async (req, res, next) => {
     try {
-        const category = await CategoryModel.findOneAndUpdate(
-            { slug: req.params.slug },
-            req.body, { new: true }
-        );
+        const category = await CategoryModel.findById(req.params.id);
+
+        if (!category) {
+            res.status(404).json({
+                success: false,
+                message: 'Category not found'
+            });
+        }
+
+        category.attributes = req.body.attributes ? req.body.attributes : [];
+
+        // return console.log(category.attributes);
+
+        category.save();
+
         res.status(200).json({
             success: true,
             category,

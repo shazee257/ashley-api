@@ -9,6 +9,7 @@ const categorySchema = new Schema(
         slug: { type: String, slug: 'title', unique: true },
         image: String,
         parent_id: String,
+        attributes: [String],
         is_deleted: { type: Boolean, default: false }
     },
     { timestamps: true }
