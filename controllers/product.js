@@ -157,8 +157,8 @@ exports.addVariant = async (req, res, next) => {
                 size: req.body.size,
                 sale_price: req.body.sale_price,
                 purchase_price: req.body.purchase_price,
-                detail_1: req.body.detail_1,
-                detail_2: req.body.detail_2,
+                description: req.body.description,
+                dimensions: req.body.dimensions,
             };
         }
 
@@ -169,7 +169,11 @@ exports.addVariant = async (req, res, next) => {
         }
         product.variants.push(variant);
         await product.save();
-        res.status(200).json({ success: true, product });
+        res.status(200).json({
+            success: true,
+            message: 'Variant created successfully',
+            product
+        });
     } catch (error) {
         next(error);
     }
@@ -179,6 +183,21 @@ exports.addVariant = async (req, res, next) => {
 exports.getProductBySlug = async (req, res, next) => {
     try {
         const product = await ProductModel.findOne({ slug: req.params.slug, is_deleted: false })
+            .populate('category_id brand_id store_id')
+            .sort({ createdAt: -1 });
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+        res.status(200).json({ success: true, product });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// get product by id
+exports.getProduct = async (req, res, next) => {
+    try {
+        const product = await ProductModel.findOne({ _id: req.params.id, is_deleted: false })
             .populate('category_id brand_id store_id')
             .sort({ createdAt: -1 });
         if (!product) {
@@ -201,8 +220,8 @@ exports.getProductVariants = async (req, res, next) => {
         if (product.is_sizes_with_colors) {
             const variants = product.variants.map((v) => {
                 return {
-                    detail_1: v.detail_1,
-                    detail_2: v.detail_2,
+                    description: v.description,
+                    dimensions: v.dimensions,
                     size: v.size,
                     sale_price: v.sale_price,
                     purchase_price: v.purchase_price,
@@ -262,9 +281,52 @@ exports.deleteVariant = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
 
-        product.variants = product.variants.filter((v) => v._id.toString() !== req.params.variantId);
+        const variant = product.variants.find((v) => v._id.toString() === req.params.variantId);
+        // if product variant contains features already, then dont delete it
+        if (variant.features.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Variant has features, please delete features first'
+            });
+        }
+
+        product.variants.pull(variant);
         await product.save();
-        res.status(200).json({ success: true, product });
+
+        res.status(200).json({
+            success: true,
+            message: 'Variant deleted successfully',
+            product
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// update variant by id
+exports.updateVariant = async (req, res, next) => {
+    try {
+        const product = await ProductModel.findById(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        const variant = product.variants.find((v) => v._id.toString() === req.params.variantId);
+        if (!variant) {
+            return res.status(404).json({ success: false, message: 'Variant not found' });
+        }
+
+        variant.size = req.body.size;
+        variant.sale_price = req.body.sale_price;
+        variant.purchase_price = req.body.purchase_price;
+        variant.description = req.body.description;
+        variant.dimensions = req.body.dimensions;
+        await product.save();
+        res.status(200).json({
+            success: true,
+            message: 'Variant updated successfully',
+            product
+        });
     } catch (error) {
         next(error);
     }

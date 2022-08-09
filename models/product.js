@@ -7,8 +7,6 @@ const productSchema = new Schema(
     {
         title: String,
         slug: { type: String, slug: 'title', unique: true },
-        detail_1: String,
-        detail_2: String,
         category_id: { type: Schema.Types.ObjectId, ref: 'category', required: true },
         brand_id: { type: Schema.Types.ObjectId, ref: 'brand', required: true },
         store_id: { type: Schema.Types.ObjectId, ref: 'store', required: true },
@@ -16,26 +14,24 @@ const productSchema = new Schema(
         // for variable product (sizes and colors)
         is_sizes_with_colors: { type: Boolean, default: false },
 
-        variants:
-            // for sizes and colors
-            [{
-                detail_1: String,
-                detail_2: String,
-                size: String,
-                sale_price: Number,
-                purchase_price: Number,
-                features: [{
-                    color: String,
-                    quantity: Number,
-                    sku: String,
-                    images: [String],
-                }],
-                // for color only
+        variants: [{
+            description: String,
+            dimensions: String,
+            size: String,
+            sale_price: Number,
+            purchase_price: Number,
+            features: [{
                 color: String,
                 quantity: Number,
                 sku: String,
                 images: [String],
             }],
+            // for color only
+            color: String,
+            quantity: Number,
+            sku: String,
+            images: [String],
+        }],
 
         // for only colors
         is_colors_only: { type: Boolean, default: false },

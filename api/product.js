@@ -11,9 +11,12 @@ const {
     addFeature,
 
     getProductBySlug,
+    getProduct,
     deleteProduct,
 
     updateProduct,
+
+    updateVariant,
 
 
     uploadImages,
@@ -22,9 +25,15 @@ const {
 
 router.post('/', createProduct);
 router.get('/', getProducts);
+router.get('/p/:id', getProduct);
 router.get('/:slug', getProductBySlug);
+
+
 router.put('/:productId', updateProduct);
+router.put('/:productId/:variantId', updateVariant);
+
 router.delete('/:productId', deleteProduct);
+
 router.delete('/:productId/:variantId', deleteVariant);
 
 // router.get('/v/:productId', getProductVariants);
