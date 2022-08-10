@@ -101,40 +101,42 @@ exports.addFeature = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
 
-        const isVariableSize = product.is_variable;
-        const images = req.files.map((image) => image.filename);
+        let feature;
+        if (req.files) {
+            const images = req.files.map((image) => image.filename);
+            multiThumbnail(req, "products");
 
-        multiThumbnail(req, "products");
-
-        const feature = {
-            color: req.body.color,
-            quantity: req.body.quantity,
-            sku: req.body.sku,
-            images: images,
-        };
-
+            feature = {
+                color: { title: req.body.colorTitle, image: req.body.colorImage },
+                quantity: req.body.quantity,
+                sku: req.body.sku,
+                images: images,
+            };
+        } else {
+            feature = {
+                color: { title: req.body.colorTitle, image: req.body.colorImage },
+                quantity: req.body.quantity,
+                sku: req.body.sku,
+            };
+        }
         // add multiple features to product sizes
-        if (isVariableSize) {
-            product.variants.forEach((v) => {
-                if (v._id.toString() === req.params.variantId) {
-                    // check feature is already exist or not
-                    const isExist = v.features.find((f) => f.color === feature.color);
-                    if (isExist) {
-                        return res.status(400).json({ success: false, message: 'Feature already exist' });
-                    }
-                    v.features.push(feature);
+        product.variants.forEach((v) => {
+            if (v._id.toString() === req.params.variantId) {
+                // check feature is already exist or not
+                const isExist = v.features.find((f) => f.color.title === feature.color.title);
+                if (isExist) {
+                    return res.status(400).json({ success: false, message: 'Feature already exist' });
                 }
-            });
-        };
-
-        // add feature to product with colors
-        if (!isVariableSize) {
-            product.colors.push(feature);
-            product.price = req.body.price;
-        };
+                v.features.push(feature);
+            }
+        });
 
         await product.save();
-        res.status(200).json({ success: true, product });
+        res.status(200).json({
+            success: true,
+            message: 'Feature added successfully',
+            product
+        });
     } catch (error) {
         next(error);
     }

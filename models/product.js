@@ -21,13 +21,13 @@ const productSchema = new Schema(
             sale_price: Number,
             purchase_price: Number,
             features: [{
-                color: String,
+                color: { title: String, image: String },
                 quantity: Number,
                 sku: String,
                 images: [String],
             }],
             // for color only
-            color: String,
+            color: { title: String, image: String },
             quantity: Number,
             sku: String,
             images: [String],
@@ -35,28 +35,8 @@ const productSchema = new Schema(
 
         // for only colors
         is_colors_only: { type: Boolean, default: false },
-        // colors: [{
-        //     color: String,
-        //     sale_price: Number,
-        //     purchase_price: Number,
-        //     quantity: Number,
-        //     sku: String,
-        //     images: [String]
-        // }],
-
         // for only sizes
         is_sizes_only: { type: Boolean, default: false },
-        // sizes: [{
-        //     size: String,
-        //     sale_price: Number,
-        //     purchase_price: Number,
-        //     quantity: Number,
-        //     sku: String,
-        //     images: [String],
-        //     detail_1: String,
-        //     detail_2: String,
-        // }],
-
 
         is_addon: { type: Boolean, default: false },
         addon: { type: String, price: Number },

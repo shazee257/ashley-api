@@ -23,3 +23,59 @@ exports.createColor = async (req, res, next) => {
     }
 };
 
+// get all colors
+exports.getAllColors = async (req, res, next) => {
+    try {
+        const colors = await ColorModel.find({ is_deleted: false });
+        res.status(200).json({
+            success: true,
+            colors,
+            message: 'Colors retrieved successfully',
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// get color
+exports.getColor = async (req, res, next) => {
+    try {
+        const color = await ColorModel.findOne({ _id: req.params.id, is_deleted: false });
+        res.status(200).json({
+            success: true,
+            color,
+            message: 'Color retrieved successfully',
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// update color
+exports.updateColor = async (req, res, next) => {
+    try {
+        const color = await ColorModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.status(200).json({
+            success: true,
+            color,
+            message: 'Color updated successfully',
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// delete color
+exports.deleteColor = async (req, res, next) => {
+    try {
+        const color = await ColorModel.findByIdAndUpdate(req.params.id, { is_deleted: true }, { new: true });
+        res.status(200).json({
+            success: true,
+            color,
+            message: 'Color deleted successfully',
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
