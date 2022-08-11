@@ -16,7 +16,7 @@ exports.createProduct = async (req, res, next) => {
 
     if (!is_sizes_with_colors && !is_colors_only && !is_sizes_only) {
         return res.status(400).json({
-            message: "Product must have at least one attribute"
+            message: "Product must have at least one attribute (Size or Color)"
         });
     }
 
@@ -153,29 +153,29 @@ exports.addVariant = async (req, res, next) => {
         const product = await ProductModel.findById(req.params.productId);
         if (!product) res.status(404).json({ success: false, message: 'Product not found' });
 
-        let variant;
+        // product with sizes and colors
         if (product.is_sizes_with_colors) {
-            variant = {
+            const variant = {
                 size: req.body.size,
                 sale_price: req.body.sale_price,
                 purchase_price: req.body.purchase_price,
                 description: req.body.description,
                 dimensions: req.body.dimensions,
             };
+            // check variant is already exist or not
+            const isExist = product.variants.find((v) => v.size === variant.size);
+            if (isExist) {
+                return res.status(400).json({ success: false, message: 'Variant already exist' });
+            }
+            product.variants.push(variant);
+            await product.save();
+            return res.status(200).json({
+                success: true,
+                message: 'Variant created successfully',
+                product
+            });
         }
 
-        // check variant is already exist or not
-        const isExist = product.variants.find((v) => v.size === variant.size);
-        if (isExist) {
-            return res.status(400).json({ success: false, message: 'Variant already exist' });
-        }
-        product.variants.push(variant);
-        await product.save();
-        res.status(200).json({
-            success: true,
-            message: 'Variant created successfully',
-            product
-        });
     } catch (error) {
         next(error);
     }

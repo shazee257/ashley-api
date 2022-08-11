@@ -102,6 +102,7 @@ exports.getCategoryBySlug = async (req, res, next) => {
             parent_id: parentCategory ? parentCategory._id : '',
             parent_title: parentCategory ? parentCategory.title : '',
             parent_image: parentCategory ? parentCategory.image : '',
+            parent_slug: parentCategory ? parentCategory.slug : '',
             attributes: category.attributes,
             createdAt: category.createdAt,
         }
