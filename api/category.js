@@ -16,15 +16,10 @@ const {
 
 } = require('../controllers/category');
 
-// Add a category
 router.post('/', upload("categories").single("image"), createCategory);
-
-// upload image
 router.post('/upload-image/:id', upload("categories").single('image'), uploadCategoryImage);
 
-// Get all categories
 router.get('/', getCategories);
-
 router.get('/c/:slug', getCategoryWithItsSubCategories);            // find category with its subcategories (nested levels)
 router.get('/:id', getCategory);
 router.get('/slug/:slug', getCategoryBySlug);                       // find category by slug with parent category

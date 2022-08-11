@@ -64,27 +64,21 @@ exports.uploadImages = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
 
-
+        multiThumbnail(req, "products");
         const images = req.files;
 
-        // save uploaded images name in database
-        if (is_sizes && images) {
-            product.attr.forEach((attr) => {
-                attr.features.forEach((feature) => {
-                    if (feature._id.toString() === req.params.featureId) {
-                        feature.images = images.map((image) => image.filename);
-                    }
-                })
-            });
-        } else {
-            if (images) {
-                product.colors.forEach((color) => {
-                    if (color._id.toString() === req.params.featureId) {
-                        color.images = images.map((image) => image.filename);
+        product.variants.forEach((v) => {
+            if (v._id.toString() === req.params.variantId) {
+                v.features.forEach((f) => {
+                    if (f._id.toString() === req.params.featureId) {
+                        f.images = images.map(image => image.filename);
                     }
                 });
             }
-        }
+        })
+
+        // const variant = product.variants.find((v) => v._id.toString() === req.params.variantId);
+        // const features = variant.features.find((f) => f.images = images.map((image) => image.filename));
 
         await product.save();
         res.status(200).json({ success: true, data: product });
