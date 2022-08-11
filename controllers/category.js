@@ -58,6 +58,7 @@ exports.getCategory = async (req, res, next) => {
             parent_id: parentCategory ? parentCategory._id : '',
             parent_title: parentCategory ? parentCategory.title : '',
             parent_image: parentCategory ? parentCategory.image : '',
+            parent_slug: parentCategory ? parentCategory.slug : '',
             attributes: category.attributes,
             createdAt: category.createdAt,
         }
@@ -151,7 +152,7 @@ exports.getCategories = async (req, res, next) => {
 // Delete a category
 exports.deleteCategory = async (req, res, next) => {
     try {
-        const category = await CategoryModel.findOneAndUpdate({ slug: req.params.slug }, { is_deleted: true }, { new: true });
+        const category = await CategoryModel.findOneAndUpdate({ _id: req.params.id }, { is_deleted: true }, { new: true });
 
         res.status(200).json({
             success: true,

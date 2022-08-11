@@ -8,7 +8,9 @@ const {
     deleteCategory, updateCategory,
 
     getCategory,
+
     getCategoryBySlug,
+
     getCategories,
     uploadCategoryImage
 
@@ -23,17 +25,13 @@ router.post('/upload-image/:id', upload("categories").single('image'), uploadCat
 // Get all categories
 router.get('/', getCategories);
 
-// Get a cateogry
-// router.get('/:slug', getCategoryWithItsSubCategories);
+router.get('/c/:slug', getCategoryWithItsSubCategories);            // find category with its subcategories (nested levels)
 router.get('/:id', getCategory);
-router.get('/slug/:slug', getCategoryBySlug);
-// router.get('/c/:id', getCategory);
-
-// Get categories with subcategories
-router.get('/fetch/subcategories', getCategoriesWithSubcategories);
+router.get('/slug/:slug', getCategoryBySlug);                       // find category by slug with parent category
+router.get('/fetch/categories', getCategoriesWithSubcategories);    // find all categories with subcategories (nested levels)
 
 // Delete a category
-router.delete('/:slug', deleteCategory);
+router.delete('/:id', deleteCategory);
 
 // Update a category
 router.put('/:id', updateCategory);
