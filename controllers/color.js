@@ -26,7 +26,8 @@ exports.createColor = async (req, res, next) => {
 // get all colors
 exports.getAllColors = async (req, res, next) => {
     try {
-        const colors = await ColorModel.find({ is_deleted: false });
+        const colors = await ColorModel.find({ is_deleted: false })
+            .sort({ title: 1 });
         res.status(200).json({
             success: true,
             colors,

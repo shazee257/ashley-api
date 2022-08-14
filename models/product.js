@@ -21,13 +21,12 @@ const productSchema = new Schema(
             sale_price: Number,
             purchase_price: Number,
             features: [{
-                color: { title: String, image: String },
+                color_id: { type: Schema.Types.ObjectId, ref: 'color' },
                 quantity: Number,
                 sku: String,
                 images: [String],
             }],
-            // for color only
-            color: { title: String, image: String },
+            color_id: { type: Schema.Types.ObjectId, ref: 'color' },
             quantity: Number,
             sku: String,
             images: [String],

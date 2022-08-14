@@ -48,7 +48,7 @@ exports.createProduct = async (req, res, next) => {
 exports.getProducts = async (req, res, next) => {
     try {
         const products = await ProductModel.find({ is_deleted: false })
-            .populate('category_id brand_id store_id')
+            .populate('category_id brand_id store_id variants.features.color_id')
             .sort({ createdAt: -1 });
         res.status(200).json({ success: true, products });
     } catch (error) {
@@ -58,6 +58,12 @@ exports.getProducts = async (req, res, next) => {
 
 // re-check the code
 exports.uploadImages = async (req, res, next) => {
+    if (!req.files) {
+        return res.status(400).json({
+            message: "No files were uploaded"
+        });
+    }
+
     try {
         const product = await ProductModel.findById(req.params.productId);
         if (!product) {
@@ -71,17 +77,18 @@ exports.uploadImages = async (req, res, next) => {
             if (v._id.toString() === req.params.variantId) {
                 v.features.forEach((f) => {
                     if (f._id.toString() === req.params.featureId) {
-                        f.images = images.map(image => image.filename);
+                        images.map(image => f.images.push(image.filename));
                     }
                 });
             }
         })
 
-        // const variant = product.variants.find((v) => v._id.toString() === req.params.variantId);
-        // const features = variant.features.find((f) => f.images = images.map((image) => image.filename));
-
         await product.save();
-        res.status(200).json({ success: true, data: product });
+        res.status(200).json({
+            success: true,
+            message: 'Images uploaded successfully',
+            product
+        });
     } catch (error) {
         next(error);
     }
@@ -96,34 +103,43 @@ exports.addFeature = async (req, res, next) => {
         }
 
         let feature;
+        // console.log("req.files typeof: ", typeof (req.files));
+        // return console.log("req.files: ", req.files);
+
         if (req.files) {
             const images = req.files.map((image) => image.filename);
             multiThumbnail(req, "products");
 
             feature = {
-                color: { title: req.body.colorTitle, image: req.body.colorImage },
+                color_id: req.body.color_id,
                 quantity: req.body.quantity,
                 sku: req.body.sku,
                 images: images,
             };
         } else {
             feature = {
-                color: { title: req.body.colorTitle, image: req.body.colorImage },
+                color_id: req.body.color_id,
                 quantity: req.body.quantity,
                 sku: req.body.sku,
             };
         }
+
         // add multiple features to product sizes
         product.variants.forEach((v) => {
             if (v._id.toString() === req.params.variantId) {
-                // check feature is already exist or not
-                const isExist = v.features.find((f) => f.color.title === feature.color.title);
-                if (isExist) {
-                    return res.status(400).json({ success: false, message: 'Feature already exist' });
+                if (v.features.length < 1) {
+                    v.features.push(feature);
+                } else {
+                    // check feature is already exist or not
+                    const isExist = v.features.find((f) => f.color_id.toString() === req.body.color_id);
+                    if (isExist) {
+                        return res.status(409).json({ success: false, message: 'Feature already exist' });
+                    }
+                    v.features.push(feature);
                 }
-                v.features.push(feature);
             }
         });
+
 
         await product.save();
         res.status(200).json({
@@ -179,7 +195,7 @@ exports.addVariant = async (req, res, next) => {
 exports.getProductBySlug = async (req, res, next) => {
     try {
         const product = await ProductModel.findOne({ slug: req.params.slug, is_deleted: false })
-            .populate('category_id brand_id store_id')
+            .populate('category_id brand_id store_id variants.features.color_id')
             .sort({ createdAt: -1 });
         if (!product) {
             return res.status(404).json({ success: false, message: 'Product not found' });
@@ -194,7 +210,7 @@ exports.getProductBySlug = async (req, res, next) => {
 exports.getProduct = async (req, res, next) => {
     try {
         const product = await ProductModel.findOne({ _id: req.params.id, is_deleted: false })
-            .populate('category_id brand_id store_id')
+            .populate('category_id brand_id store_id variants.features.color_id')
             .sort({ createdAt: -1 });
         if (!product) {
             return res.status(404).json({ success: false, message: 'Product not found' });
@@ -321,6 +337,69 @@ exports.updateVariant = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: 'Variant updated successfully',
+            product
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// delete feature by id
+exports.deleteFeature = async (req, res, next) => {
+    try {
+        const product = await ProductModel.findById(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        const variant = product.variants.find((v) => v._id.toString() === req.params.variantId);
+        if (!variant) {
+            return res.status(404).json({ success: false, message: 'Variant not found' });
+        }
+
+        const feature = variant.features.find((f) => f._id.toString() === req.params.featureId);
+        if (!feature) {
+            return res.status(404).json({ success: false, message: 'Feature not found' });
+        }
+
+        variant.features.pull(feature);
+        await product.save();
+        res.status(200).json({
+            success: true,
+            message: 'Product variant feature deleted successfully',
+            product
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// update feature by id
+exports.updateFeature = async (req, res, next) => {
+    try {
+        const product = await ProductModel.findById(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        const variant = product.variants.find((v) => v._id.toString() === req.params.variantId);
+        if (!variant) {
+            return res.status(404).json({ success: false, message: 'Variant not found' });
+        }
+
+        const feature = variant.features.find((f) => f._id.toString() === req.params.featureId);
+        if (!feature) {
+            return res.status(404).json({ success: false, message: 'Feature not found' });
+        }
+
+        feature.color_id = req.body.color_id;
+        feature.quantity = req.body.quantity;
+        feature.sku = req.body.sku;
+
+        await product.save();
+        res.status(200).json({
+            success: true,
+            message: 'Product variant feature updated successfully',
             product
         });
     } catch (error) {
