@@ -48,7 +48,6 @@ exports.getWishlist = async (req, res, next) => {
         if (wishlist) {
             res.status(200).json({
                 success: true,
-                message: 'Wishlist found',
                 wishlist: wishlist.product_ids
             });
         } else {
