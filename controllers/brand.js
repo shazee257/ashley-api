@@ -36,7 +36,7 @@ exports.uploadImage = async (req, res, next) => {
 
         try {
             await BrandModel.findOneAndUpdate(
-                { slug: req.params.slug, is_deleted: false },
+                { _id: req.params.id, is_deleted: false },
                 { image: req.file.filename }
             );
             thumbnail(req, "brands");
@@ -57,10 +57,10 @@ exports.uploadImage = async (req, res, next) => {
     });
 }
 
-// get a brand by slug
-exports.getBrandBySlug = async (req, res, next) => {
+// get a brand
+exports.getBrand = async (req, res, next) => {
     try {
-        const brand = await BrandModel.findOne({ slug: req.params.slug });
+        const brand = await BrandModel.findById(req.params.id);
         res.status(200).json({
             success: true,
             brand
@@ -89,7 +89,7 @@ exports.updateBrand = async (req, res, next) => {
     const { title, description } = req.body;
     try {
         const brand = await BrandModel.findOneAndUpdate(
-            { slug: req.params.slug },
+            { _id: req.params.id },
             { title, description }, { new: true }
         );
 
@@ -106,7 +106,7 @@ exports.updateBrand = async (req, res, next) => {
 // delete a brand (soft delete)
 exports.deleteBrand = async (req, res, next) => {
     try {
-        await BrandModel.findOneAndUpdate({ slug: req.params.slug }, { is_deleted: true });
+        await BrandModel.findByIdAndUpdate(req.params.id, { is_deleted: true });
         res.status(200).json({
             success: true,
             message: 'Brand deleted successfully',

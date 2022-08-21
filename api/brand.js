@@ -4,20 +4,20 @@ const { chargeCreditCard } = require('../middlewares/authorizenet');
 
 const {
     createBrand, uploadImage,
-    getBrandBySlug,
+    getBrand,
     getAllBrands,
     updateBrand, deleteBrand,
     test
 } = require('../controllers/brand');
 
 router.post('/', upload("brands").single('image'), createBrand);
-router.post('/upload-image/:slug', upload("brands").single('image'), uploadImage);
+router.post('/upload-image/:id', upload("brands").single('image'), uploadImage);
 
 router.get('/', getAllBrands);
-router.get('/:slug', getBrandBySlug);
+router.get('/:id', getBrand);
 
-router.put('/:slug', updateBrand);
-router.delete('/:slug', deleteBrand);
+router.put('/:id', updateBrand);
+router.delete('/:id', deleteBrand);
 
 // testing payment API
 

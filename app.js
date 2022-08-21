@@ -3,9 +3,6 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 const cors = require("cors");
-// const swaggerUI = require('swagger-ui-express');
-// const yaml = require('js-yaml');
-// const fs = require('fs');
 const asyncHandler = require('express-async-handler');
 const api = require('./api');
 const bodyParser = require("body-parser");
@@ -26,9 +23,7 @@ const app = express();
 // Middlewares
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-
-// app.use('/assets', express.static('src/assets'));
+// app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/uploads', express.static('src/assets/uploads'));
 
 // Port assign
@@ -42,28 +37,21 @@ if (env === 'development') {
     app.use(morgan('dev'));
 }
 
-app.use("/",
-    asyncHandler(async (req, res, next) => {
-        try {
-            // console.log("---Request header--", req.headers);
-            // console.log("---Request Query---", req.query);
-            // console.log("---Request Body----", req.body);
-            // console.log("---Request Path----", req.path);
-            // console.log("---Request File----", req.file);
-            next();
-        } catch (error) {
-            next();
-        }
-    }),
-    api
-);
-
-// app.use((err, req, res, next) => {
-//     console.log(err);
-//     res.status(500).json({ message: `Internal Server error : ${err.message}` });
-// });
-
-app.use('/uploads', express.static('src/uploads'));
+app.use("/", api);
+//     asyncHandler(async (req, res, next) => {
+//         try {
+//             // console.log("---Request header--", req.headers);
+//             // console.log("---Request Query---", req.query);
+//             // console.log("---Request Body----", req.body);
+//             // console.log("---Request Path----", req.path);
+//             // console.log("---Request File----", req.file);
+//             next();
+//         } catch (error) {
+//             next();
+//         }
+//     }),
+//     api
+// );
 
 app.listen(port, () =>
     console.log(`API running on http://localhost:${port} on ${env} mode`)

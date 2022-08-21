@@ -212,8 +212,10 @@ exports.uploadCategoryImage = async (req, res, next) => {
 // Get categories with subcategories (not used)
 exports.getCategoriesWithSubcategories = async (req, res, next) => {
     try {
-        const categories = await CategoryModel.find({ is_deleted: false });
+        const categories = await CategoryModel.find({ is_deleted: false })
+            .sort({ title: 1 });
         const parentCategories = categories.filter((category) => category.parent_id == '');
+
 
         const categoryList = parentCategories.map((parentCategory) => {
             const subCategories = categories.filter((category) => category.parent_id == parentCategory._id);
@@ -270,7 +272,8 @@ function getCategoriesWithSubcategories(categories, parentCategory) {
 // Get all categories with subcategories recursively
 exports.getCategoriesWithSubcategories = async (req, res, next) => {
     try {
-        const categories = await CategoryModel.find({ is_deleted: false });
+        const categories = await CategoryModel.find({ is_deleted: false })
+            .sort({ title: 1 });
         const parentCategories = categories.filter((category) => category.parent_id == '');
 
         const categoryList = parentCategories.map((parentCategory) => {
