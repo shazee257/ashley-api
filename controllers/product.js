@@ -410,7 +410,17 @@ exports.updateFeature = async (req, res, next) => {
 // get featured products
 exports.getFeaturedProducts = async (req, res, next) => {
     try {
-        const products = await ProductModel.find({ is_featured: true, is_deleted: false });
+        const products = await ProductModel.find({ is_featured: true, is_deleted: false }).sort({ createdAt: -1 });
+        res.status(200).json({ success: true, products });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// get discounted products
+exports.getDiscountedProducts = async (req, res, next) => {
+    try {
+        const products = await ProductModel.find({ is_deleted: false, discount: { $gt: 0 } }).sort({ discount: -1 });
         res.status(200).json({ success: true, products });
     } catch (error) {
         next(error);
