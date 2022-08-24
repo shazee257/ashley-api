@@ -7,7 +7,7 @@ const {
     // getProductVariants,
 
     deleteProduct, deleteVariant, deleteFeature,
-    getProductBySlug, getProduct, getProducts,
+    getProductBySlug, getProduct, getProducts, getFeaturedProducts,
     updateProduct, updateVariant, updateFeature,
     uploadImages,
 
@@ -18,8 +18,9 @@ router.post('/:productId', addVariant); //add new variant to product
 router.post('/:productId/:variantId', upload("products").array('files', 10), addFeature); //add new feature to variant product
 
 router.get('/', getProducts);
-router.get('/p/:id', getProduct);
+router.get("/featured", getFeaturedProducts);
 router.get('/:slug', getProductBySlug);
+router.get('/p/:id', getProduct);
 
 
 router.put('/:productId', updateProduct);
