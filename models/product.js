@@ -23,11 +23,13 @@ const productSchema = new Schema(
                 quantity: Number,
                 sku: String,
                 images: [String],
+                stock_qty: Number,
+                stock_date: Date,
             }],
-            color_id: { type: Schema.Types.ObjectId, ref: 'color' },
-            quantity: Number,
-            sku: String,
-            images: [String],
+            // color_id: { type: Schema.Types.ObjectId, ref: 'color' },
+            // quantity: Number,
+            // sku: String,
+            // images: [String],
         }],
 
         // for variable product (sizes and colors)
