@@ -7,7 +7,8 @@ const {
     // getProductVariants,
 
     deleteProduct, deleteVariant, deleteFeature,
-    getProductBySlug, getProduct, getProducts, getFeaturedProducts, getDiscountedProducts,
+    getProductBySlug, getProduct, getProducts, getFeaturedProducts,
+    getDiscountedProducts, getDiscountedProductsCategories,
     updateProduct, updateVariant, updateFeature,
     uploadImages,
 
@@ -20,6 +21,7 @@ router.post('/:productId/:variantId', upload("products").array('files', 10), add
 router.get('/', getProducts);
 router.get("/featured", getFeaturedProducts);
 router.get("/discounted", getDiscountedProducts);
+router.get("/discount/categories", getDiscountedProductsCategories);
 router.get('/:slug', getProductBySlug);
 router.get('/p/:id', getProduct);
 

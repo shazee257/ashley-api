@@ -16,7 +16,7 @@ const {
 
 } = require('../controllers/category');
 
-router.post('/', upload("categories").single("image"), createCategory);
+router.post('/', upload("categories").array('image'), createCategory);
 router.post('/upload-image/:id', upload("categories").single('image'), uploadCategoryImage);
 
 router.get('/', getCategories);

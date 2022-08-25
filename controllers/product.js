@@ -418,3 +418,16 @@ exports.getDiscountedProducts = async (req, res, next) => {
         next(error);
     }
 }
+
+// get discounted products' categories
+exports.getDiscountedProductsCategories = async (req, res, next) => {
+    try {
+        const products = await ProductModel.find({ is_deleted: false, discount: { $gt: 0 } })
+            .populate('category_id')
+            .sort({ discount: -1 });
+        const categories = products.map((product) => product.category_id);
+        res.status(200).json({ success: true, categories });
+    } catch (error) {
+        next(error);
+    }
+}
