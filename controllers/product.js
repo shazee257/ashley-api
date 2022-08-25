@@ -48,8 +48,8 @@ exports.createProduct = async (req, res, next) => {
 exports.getProducts = async (req, res, next) => {
     try {
         const products = await ProductModel.find({ is_deleted: false })
-            .populate('category_id brand_id store_id')
-            // .populate('category_id brand_id store_id variants.features.color_id')
+            // .populate('category_id brand_id store_id')
+            .populate('category_id brand_id store_id variants.features.color_id')
             .sort({ createdAt: -1 });
         res.status(200).json({ success: true, products });
     } catch (error) {
@@ -103,26 +103,16 @@ exports.addFeature = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
 
-        let feature;
-        // console.log("req.files typeof: ", typeof (req.files));
-        // return console.log("req.files: ", req.files);
+        let feature = {
+            color_id: req.body.color_id,
+            quantity: req.body.quantity,
+            sku: req.body.sku,
+            zero_stock_msg: req.body.zero_stock_msg,
+        }
 
         if (req.files) {
-            const images = req.files.map((image) => image.filename);
+            feature.images = req.files.map((image) => image.filename);
             multiThumbnail(req, "products");
-
-            feature = {
-                color_id: req.body.color_id,
-                quantity: req.body.quantity,
-                sku: req.body.sku,
-                images: images,
-            };
-        } else {
-            feature = {
-                color_id: req.body.color_id,
-                quantity: req.body.quantity,
-                sku: req.body.sku,
-            };
         }
 
         // add multiple features to product sizes
@@ -396,6 +386,7 @@ exports.updateFeature = async (req, res, next) => {
         feature.color_id = req.body.color_id;
         feature.quantity = req.body.quantity;
         feature.sku = req.body.sku;
+        feature.zero_stock_msg = req.body.zero_stock_msg;
 
         await product.save();
         res.status(200).json({
