@@ -15,8 +15,6 @@ exports.createBanner = async (req, res, next) => {
         thumbnail(req, "banners");
     };
 
-
-
     try {
         const banner = await BannerModel.create(bannerData);
         res.status(200).json({
@@ -84,7 +82,7 @@ exports.uploadBannerImage = async (req, res, next) => {
         // bannerData.image = req.file.filename
         thumbnail(req, "banners");
         try {
-            const banner = await BannerModel.findByIdAndUpdate(req.params.id, req.file.filename, { new: true });
+            const banner = await BannerModel.findByIdAndUpdate(req.params.id, { image: req.file.filename }, { new: true });
             res.status(200).json({
                 success: true,
                 banner,
