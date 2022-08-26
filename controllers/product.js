@@ -425,9 +425,28 @@ exports.getDiscountedProductsCategories = async (req, res, next) => {
         const products = await ProductModel.find({ is_deleted: false, discount: { $gt: 0 } })
             .populate('category_id')
             .sort({ discount: -1 });
-        const categories = products.map((product) => product.category_id);
+
+        // find unique categories
+        const categories = [];
+        products.forEach((product) => {
+            if (!searchInObjectInArray(categories, "_id", product.category_id._id)) {
+                categories.push(product.category_id);
+            }
+        });
+
         res.status(200).json({ success: true, categories });
     } catch (error) {
         next(error);
     }
 }
+
+// search in object in array
+function searchInObjectInArray(array, key, value) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i][key] === value) {
+            return true;
+        }
+    }
+    return false;
+}
+
