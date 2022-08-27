@@ -1,15 +1,16 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const bannerSchema = new Schema(
-    {
-        title: { type: String, required: true, unique: true },
-        description: String,
-        url: String,
-        image: String,
-        is_active: { type: Boolean, default: true },
-        is_deleted: { type: Boolean, default: false }
-    },
+const bannerSchema = new Schema({
+    title: { type: String, required: true, unique: true },
+    description: String,
+    image: String,
+    url: String,
+    type: { type: String, enum: ['category', 'custom', 'slider'] },
+    category_id: { type: Schema.Types.ObjectId, ref: 'category' },
+    is_active: { type: Boolean, default: true },
+    is_deleted: { type: Boolean, default: false }
+},
     { timestamps: true }
 );
 

@@ -1,15 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const sliderSchema = new Schema(
-    {
-        title: String,
-        sub_title: String,
-        description: String,
-        image: { type: String, required: true },
-        url: String,
-        is_deleted: { type: Boolean, default: false }
-    },
+const sliderSchema = new Schema({
+    title: String,
+    description: String,
+    image: { type: String, required: true },
+    url: String,
+    is_deleted: { type: Boolean, default: false }
+},
     { timestamps: true }
 );
 
