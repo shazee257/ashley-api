@@ -412,7 +412,8 @@ exports.getFeaturedProducts = async (req, res, next) => {
 // get discounted products
 exports.getDiscountedProducts = async (req, res, next) => {
     try {
-        const products = await ProductModel.find({ is_deleted: false, discount: { $gt: 0 } }).sort({ discount: -1 });
+        const products = await ProductModel.find({ is_deleted: false, discount: { $gt: 0 } })
+            .populate('category_id').sort({ discount: -1 });
         res.status(200).json({ success: true, products });
     } catch (error) {
         next(error);
@@ -450,3 +451,12 @@ function searchInObjectInArray(array, key, value) {
     return false;
 }
 
+// get discounted products in category
+exports.getDiscountedProductsInCategory = async (req, res, next) => {
+    try {
+        const products = await ProductModel.find({ is_deleted: false, discount: { $gt: 0 }, category_id: req.params.categoryId }).sort({ discount: -1 });
+        res.status(200).json({ success: true, products });
+    } catch (error) {
+        next(error);
+    }
+}
