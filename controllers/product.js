@@ -451,12 +451,19 @@ function searchInObjectInArray(array, key, value) {
     return false;
 }
 
-// get discounted products in category
+// get discounted products via category slug
 exports.getDiscountedProductsInCategory = async (req, res, next) => {
     try {
-        const products = await ProductModel.find({ is_deleted: false, discount: { $gt: 0 }, category_id: req.params.categoryId })
+        // const products = await ProductModel.find({ is_deleted: false, discount: { $gt: 0 }, category_id: req.params.categoryId })
+        const discountedProducts = await ProductModel.find({ is_deleted: false, discount: { $gt: 0 } })
             .populate('category_id').sort({ discount: -1 });
-        res.status(200).json({ success: true, products });
+
+
+        const products = discountedProducts.filter((product) => product.category_id.slug === req.params.categorySlug);
+
+
+
+        res.status(200).json({ success: true, products, length: products.length });
     } catch (error) {
         next(error);
     }

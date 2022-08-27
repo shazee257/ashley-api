@@ -24,7 +24,7 @@ router.get("/featured", getFeaturedProducts);
 // get discounted products
 router.get("/discounted", getDiscountedProducts);
 
-router.get("/discounted/:categoryId", getDiscountedProductsInCategory);
+router.get("/discounted/:categorySlug", getDiscountedProductsInCategory);
 router.get("/discount/categories", getDiscountedProductsCategories);
 router.get('/:slug', getProductBySlug);
 router.get('/p/:id', getProduct);
