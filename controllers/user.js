@@ -76,7 +76,7 @@ exports.registerUser = async (req, res, next) => {
     req.body.email_confirmation_token = crypto.randomBytes(32).toString('hex'); // generate random token
 
     try {
-        const link = `${process.env.FRONTEND_URI}/users/email-confirmation/${req.body.email_confirmation_token}`;
+        const link = `${process.env.FRONTEND_URI}/email-confirmation/${req.body.email_confirmation_token}`;
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: req.body.email,
