@@ -458,12 +458,8 @@ exports.getDiscountedProductsInCategory = async (req, res, next) => {
         const discountedProducts = await ProductModel.find({ is_deleted: false, discount: { $gt: 0 } })
             .populate('category_id').sort({ discount: -1 });
 
-
         const products = discountedProducts.filter((product) => product.category_id.slug === req.params.categorySlug);
-
-
-
-        res.status(200).json({ success: true, products, length: products.length });
+        res.status(200).json({ success: true, products });
     } catch (error) {
         next(error);
     }

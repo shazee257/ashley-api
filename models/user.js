@@ -12,12 +12,16 @@ const userSchema = new Schema(
         image: { type: String },
         alternet_phone_no: String,
         password: { type: String, required: true },
+
+        email_confirmation_token: { type: String },
+        verified: { type: Boolean, default: false },
+
         reset_password_token: String,
         reset_token_expires: { type: Date },
         address_ids: [{ type: Schema.Types.ObjectId, ref: 'address' }],
         is_deleted: { type: Boolean, default: false },
 
-        email_subscription: { type: Boolean, default: false },
+        email_subscription: { type: Boolean, default: true },
 
         // for store user
         store_id: { type: Schema.Types.ObjectId, ref: 'store' },

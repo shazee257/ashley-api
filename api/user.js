@@ -9,17 +9,15 @@ const {
     createAddress, updateAddress, getAddresses, deleteAddress,
     uploadUserImage,
     verifyAccessToken,
-
-    createThumbnail
-
+    emailConfirmation
 } = require('../controllers/user');
 
-// const use = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
 router.post('/register', upload("users").single('image'), registerUser);
 router.post('/login', loginUser);
 router.post('/forgot-password', forgotPassword);
 router.get('/reset-password/:resetToken', resetPassword);
+router.put("/email-confirmation/:emailConfirmationToken", emailConfirmation);
 router.post('/new-password/:userId', newPassword);
 
 router.get('/verify-token', verifyAccessToken);
@@ -41,10 +39,5 @@ router.put('/address/:addressId', updateAddress);
 router.get('/address/:userId', getAddresses);
 router.delete('/address/:addressId', deleteAddress);
 router.post('/:userId/upload-image', upload("users").single('image'), uploadUserImage);
-
-
-
-router.post('/image/create-thumbnail', upload("users").single('image'), createThumbnail);
-
 
 module.exports = router;
