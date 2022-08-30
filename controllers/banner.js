@@ -36,7 +36,8 @@ exports.createBanner = async (req, res, next) => {
 // get all banners
 exports.getAllBanners = async (req, res, next) => {
     try {
-        const banners = await BannerModel.find({ 'is_deleted': false, 'is_active': true });
+        const banners = await BannerModel.find({ 'is_deleted': false, 'is_active': true })
+            .populate('category_id');
         res.status(200).json({
             success: true,
             banners,
