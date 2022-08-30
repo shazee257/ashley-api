@@ -50,7 +50,7 @@ exports.getAllBanners = async (req, res, next) => {
 // get banner
 exports.getBanner = async (req, res, next) => {
     try {
-        const banner = await BannerModel.findOne({ '_id': req.params.id, 'is_deleted': false, 'is_active': true });
+        const banner = await BannerModel.findOne({ '_id': req.params.id, 'is_deleted': false });
         res.status(200).json({
             success: true,
             banner,
@@ -63,15 +63,16 @@ exports.getBanner = async (req, res, next) => {
 
 // update banner
 exports.updateBanner = async (req, res, next) => {
-    let bannerData = {
+    let bannerObj = {
         title: req.body.title,
         description: req.body.description,
         url: req.body.url,
-        is_active: req.body.is_active,
-    };
+        type: req.body.type,
+        category_id: req.body.type === 'category' ? req.body.category_id : null,
+    }
 
     try {
-        const banner = await BannerModel.findByIdAndUpdate(req.params.id, bannerData, { new: true });
+        const banner = await BannerModel.findByIdAndUpdate(req.params.id, bannerObj, { new: true });
         res.status(200).json({
             success: true,
             banner,
@@ -85,7 +86,6 @@ exports.updateBanner = async (req, res, next) => {
 // upload banner image
 exports.uploadBannerImage = async (req, res, next) => {
     if (req.file) {
-        // bannerData.image = req.file.filename
         thumbnail(req, "banners");
         try {
             const banner = await BannerModel.findByIdAndUpdate(req.params.id, { image: req.file.filename }, { new: true });
