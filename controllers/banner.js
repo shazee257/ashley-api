@@ -3,20 +3,26 @@ const { thumbnail } = require('../utils/utils');
 
 // create a new banner
 exports.createBanner = async (req, res, next) => {
-    let bannerData = {
+    if (!req.file) {
+        return res.status(400).json({
+            success: false,
+            message: 'Please upload an image'
+        });
+    }
+
+    thumbnail(req, "banners");
+
+    let bannerObj = {
         title: req.body.title,
         description: req.body.description,
+        image: req.file.filename,
         url: req.body.url,
-        is_active: req.body.is_active,
-    };
-
-    if (req.file) {
-        bannerData.image = req.file.filename
-        thumbnail(req, "banners");
-    };
+        type: req.body.type,
+        category_id: req.body.type === 'category' ? req.body.category_id : null,
+    }
 
     try {
-        const banner = await BannerModel.create(bannerData);
+        const banner = await BannerModel.create(bannerObj);
         res.status(200).json({
             success: true,
             banner,

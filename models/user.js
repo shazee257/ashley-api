@@ -14,7 +14,7 @@ const userSchema = new Schema(
         password: { type: String, required: true },
 
         email_confirmation_token: { type: String },
-        verified: { type: Boolean, default: false },
+        is_verified: { type: Boolean, default: false },
 
         reset_password_token: String,
         reset_token_expires: { type: Date },

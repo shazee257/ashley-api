@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const bannerSchema = new Schema({
-    title: { type: String, required: true, unique: true },
+    title: String,
     description: String,
-    image: String,
+    image: { type: String, required: true },
     url: String,
     type: { type: String, enum: ['category', 'custom', 'slider'] },
     category_id: { type: Schema.Types.ObjectId, ref: 'category' },

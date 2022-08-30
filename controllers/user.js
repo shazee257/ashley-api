@@ -240,11 +240,18 @@ exports.loginUser = async (req, res, next) => {
     }
 
     try {
-        const user = await UserModel.findOne({ email: req.body.email, is_deleted: false, verified: true });
+        const user = await UserModel.findOne({ email: req.body.email, is_deleted: false });
         if (!user) {
             return res.status(404).json({
                 success: false,
                 message: 'User not found'
+            });
+        }
+
+        if (user.is_verified === false) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please verify your email first'
             });
         }
 
@@ -573,7 +580,7 @@ exports.emailConfirmation = async (req, res, next) => {
         }
 
         user.email_confirmation_token = null;
-        user.verified = true;
+        user.is_verified = true;
         await user.save();
         res.status(200).json({
             success: true,
