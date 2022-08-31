@@ -43,6 +43,7 @@ const productSchema = new Schema(
 
         // discount in percentage
         discount: { type: Number, default: 0 },
+        rating: { type: Number, default: 0 },
         // online_only: { type: Boolean, default: false },
         is_deleted: { type: Boolean, default: false }
     },

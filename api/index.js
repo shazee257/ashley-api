@@ -1,15 +1,15 @@
-const apiRouter = require('express').Router();
+const router = require('express').Router();
 
-apiRouter.use('/brands', require('./brand'));
-apiRouter.use('/categories', require('./category'));
-apiRouter.use('/stores', require('./store'));
-apiRouter.use('/users', require('./user'));
-apiRouter.use('/products', require('./product'));
-apiRouter.use('/colors', require('./color'));
-apiRouter.use('/cart', require('./cart'));
-apiRouter.use('/wishlist', require('./wishlist'));
-apiRouter.use('/banners', require('./banner'));
-apiRouter.use('/sliders', require('./slider'));
+router.use('/brands', require('./brand'));
+router.use('/categories', require('./category'));
+router.use('/stores', require('./store'));
+router.use('/users', require('./user'));
+router.use('/products', require('./product'));
+router.use('/colors', require('./color'));
+router.use('/cart', require('./cart'));
+router.use('/wishlist', require('./wishlist'));
+router.use('/banners', require('./banner'));
+router.use('/reviews', require('./reviews'));
 
 
-module.exports = apiRouter;
+module.exports = router;
