@@ -244,7 +244,7 @@ exports.loginUser = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({
                 success: false,
-                message: 'User not found'
+                message: 'email not found'
             });
         }
 
@@ -272,7 +272,7 @@ exports.loginUser = async (req, res, next) => {
             user_id: user._id,
             expiry_date: new Date(moment().add(process.env.SESSION_EXPIRY_DAYS, "days"))
         });
-        res.status(200).json({ success: true, user, session });
+        res.status(200).json({ success: true, user, session, message: "Login successful!", });
 
     } catch (error) {
         next(error);
