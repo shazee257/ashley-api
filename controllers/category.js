@@ -3,17 +3,16 @@ const { thumbnail, multiThumbnail } = require('../utils/utils');
 
 // create a new category
 exports.createCategory = async (req, res, next) => {
-    // return console.log("req.files", req.files);
-    if (req.files) {
+    if (req.file) {
         req.body.image = req.files[0].filename
-        req.body.discount_image = req.files[1].filename
-        multiThumbnail(req, "categories");
+        // req.body.discount_image = req.files[1].filename
+        thumbnail(req, "categories");
     }
 
     const categoryObj = {
         title: req.body.title,
         image: req.body.image ? req.body.image : "",
-        discount_image: req.body.discount_image ? req.body.discount_image : "",
+        // discount_image: req.body.discount_image ? req.body.discount_image : "",
         parent_id: req.body.parent_id ? req.body.parent_id : "",
         attributes: req.body.attributes ? req.body.attributes.split(',') : [],
     }
@@ -58,6 +57,7 @@ exports.getCategory = async (req, res, next) => {
             title: category.title,
             image: category.image,
             slug: category.slug,
+            discount_image: category.discount_image,
             parent_id: parentCategory ? parentCategory._id : '',
             parent_title: parentCategory ? parentCategory.title : '',
             parent_image: parentCategory ? parentCategory.image : '',
@@ -352,6 +352,25 @@ exports.getCategoryWithItsSubCategories = async (req, res, next) => {
             success: true,
             category: categoryList,
             message: 'Categories found successfully'
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// upload discount image
+exports.uploadDiscountImage = async (req, res, next) => {
+    try {
+        const category = await CategoryModel.findOne({ _id: req.params.id, is_deleted: false });
+        if (req.file) {
+            thumbnail(req, "categories");
+            category.discount_image = req.file.filename;
+            await category.save();
+        }
+        res.status(200).json({
+            success: true,
+            message: 'Discounted Image uploaded successfully',
+            category
         });
     } catch (error) {
         next(error);

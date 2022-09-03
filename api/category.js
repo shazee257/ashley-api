@@ -12,12 +12,13 @@ const {
     getCategoryBySlug,
 
     getCategories,
-    uploadCategoryImage
+    uploadCategoryImage, uploadDiscountImage,
 
 } = require('../controllers/category');
 
-router.post('/', upload("categories").array('image'), createCategory);
+router.post('/', upload("categories").single('image'), createCategory);
 router.post('/upload-image/:id', upload("categories").single('image'), uploadCategoryImage);
+router.post('/discount-image/:id', upload("categories").single('image'), uploadDiscountImage);
 
 router.get('/', getCategories);
 router.get('/c/:slug', getCategoryWithItsSubCategories);            // find category with its subcategories (nested levels)
