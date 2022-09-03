@@ -6,7 +6,7 @@ const userSchema = new Schema(
         // common fields
         first_name: { type: String },
         last_name: { type: String },
-        email: { type: String, unique: true, required: true },
+        email: { type: String, unique: true, required: true, lowercase: true },
         role: { type: String, enum: ['customer', 'store', 'admin', 'seller', 'user'], default: 'customer' },
         phone_no: { type: String },
         image: { type: String },

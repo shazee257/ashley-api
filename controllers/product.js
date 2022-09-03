@@ -1,5 +1,6 @@
 const ProductModel = require('../models/product');
 const CategoryModel = require('../models/category');
+const ReviewsModel = require('../models/reviews');
 const { multiThumbnail } = require('../utils/utils');
 
 exports.createProduct = async (req, res, next) => {
@@ -191,7 +192,9 @@ exports.getProductBySlug = async (req, res, next) => {
         if (!product) {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
-        res.status(200).json({ success: true, product });
+        const reviews = await ReviewsModel.find({ product_id: product._id }).populate('user_id');
+
+        res.status(200).json({ success: true, product, reviews });
     } catch (error) {
         next(error);
     }
