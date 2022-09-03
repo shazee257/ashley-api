@@ -193,7 +193,6 @@ exports.getProductBySlug = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
         const reviews = await ReviewsModel.find({ product_id: product._id }).populate('user_id');
-
         res.status(200).json({ success: true, product, reviews });
     } catch (error) {
         next(error);

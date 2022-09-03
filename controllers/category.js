@@ -180,6 +180,8 @@ exports.updateCategory = async (req, res, next) => {
             });
         }
 
+        category.parent_id = req.body.parent_id ? req.body.parent_id : category.parent_id;
+        category.title = req.body.title ? req.body.title : category.title;
         category.attributes = req.body.attributes ? req.body.attributes : [];
 
         await category.save();
