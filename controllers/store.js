@@ -13,7 +13,7 @@ exports.createStore = async (req, res, next) => {
         res.status(200).json({
             success: true,
             store,
-            message: 'New Store / Franchise added successfully',
+            message: 'New Store / Warehouse created successfully',
         });
     } catch (error) {
         next(error);
@@ -25,7 +25,7 @@ exports.uploadImage = async (req, res, next) => {
     if (req.file) {
         try {
             const store = await StoreModel.findOneAndUpdate(
-                { slug: req.params.slug, is_deleted: false },
+                { _id: req.params.id, is_deleted: false },
                 { banner: req.file.filename },
                 { new: true }
             );
@@ -50,7 +50,7 @@ exports.uploadImage = async (req, res, next) => {
 // get a store
 exports.getStore = async (req, res, next) => {
     try {
-        const store = await StoreModel.findOne({ slug: req.params.slug, is_deleted: false });
+        const store = await StoreModel.findOne({ _id: req.params.id, is_deleted: false });
         res.status(200).json({
             success: true,
             store
@@ -77,10 +77,9 @@ exports.getAllStores = async (req, res, next) => {
 // update a store
 exports.updateStore = async (req, res, next) => {
     try {
-        const store = await StoreModel.
-            findOneAndUpdate({ slug: req.params.slug, is_deleted: false },
-                req.body, { new: true }
-            );
+        const store = await StoreModel.findOneAndUpdate({ _id: req.params.id, is_deleted: false },
+            req.body, { new: true }
+        );
 
         res.status(200).json({
             success: true,
@@ -95,12 +94,10 @@ exports.updateStore = async (req, res, next) => {
 // delete a store (soft delete)
 exports.deleteStore = async (req, res, next) => {
     try {
-        const store = await StoreModel.
-            findOneAndUpdate({ slug: req.params.slug, is_deleted: false },
-                { is_deleted: true },
-                { new: true }
-            );
-        console.log(store);
+        const store = await StoreModel.findOneAndUpdate(
+            { _id: req.params.id, is_deleted: false },
+            { is_deleted: true }, { new: true }
+        );
         res.status(200).json({
             success: true,
             store,

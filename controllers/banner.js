@@ -34,7 +34,7 @@ exports.createBanner = async (req, res, next) => {
 };
 
 // get all banners
-exports.getAllBanners = async (req, res, next) => {
+exports.getActiveBanners = async (req, res, next) => {
     try {
         const banners = await BannerModel.find({ 'is_deleted': false, 'is_active': true })
             .populate('category_id');
@@ -114,6 +114,37 @@ exports.deleteBanner = async (req, res, next) => {
             success: true,
             banner,
             message: 'Banner deleted successfully',
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// activate banner
+exports.activateDeactiveBanner = async (req, res, next) => {
+    const status = req.body.status;
+
+    try {
+        const banner = await BannerModel.findByIdAndUpdate(req.params.id, { 'is_active': !status }, { new: true });
+        res.status(200).json({
+            success: true,
+            banner,
+            message: 'Banner updated successfully',
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// get all banners
+exports.getActiveInactiveBanners = async (req, res, next) => {
+    try {
+        const banners = await BannerModel.find({ 'is_deleted': false })
+            .populate('category_id');
+        res.status(200).json({
+            success: true,
+            banners,
+            message: 'Banners fetched successfully',
         });
     } catch (error) {
         next(error);
