@@ -14,7 +14,6 @@ exports.createProduct = async (req, res, next) => {
     // } else if (category.attributes.includes("Size") && !category.attributes.includes("Color")) {
     //     is_sizes_only = true;
     // }
-    let is_sizes_with_colors = true;
 
     // if (!is_sizes_with_colors && !is_colors_only && !is_sizes_only) {
     //     return res.status(400).json({
@@ -22,20 +21,16 @@ exports.createProduct = async (req, res, next) => {
     //     });
     // }
 
-    const title = req.body.title;
-    const store_id = req.body.store_id;
-    const category_id = req.body.category_id;
-    const brand_id = req.body.brand_id;
-    const is_feature = req.body.is_feature;
+
+
+    // const title = req.body.title;
+    // const store_id = req.body.store_id;
+    // const category_id = req.body.category_id;
+    // const brand_id = req.body.brand_id;
+    // const is_featured = req.body.is_featured;
 
     try {
-        const product = await ProductModel.create({
-            title,
-            store_id,
-            category_id,
-            brand_id,
-            is_sizes_with_colors,
-        });
+        const product = await ProductModel.create(req.body);
         res.status(200).json({
             success: true,
             message: 'Product created successfully',
@@ -254,9 +249,11 @@ exports.updateProduct = async (req, res, next) => {
         product.category_id = req.body.category_id;
         product.brand_id = req.body.brand_id;
         product.store_id = req.body.store_id;
+        product.is_featured = req.body.is_featured;
+        product.discount = req.body.discount;
 
         await product.save();
-        res.status(200).json({ success: true, product });
+        res.status(200).json({ success: true, product, message: 'Product updated successfully' });
     } catch (error) {
         next(error);
     }
