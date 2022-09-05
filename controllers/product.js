@@ -4,27 +4,29 @@ const ReviewsModel = require('../models/reviews');
 const { multiThumbnail } = require('../utils/utils');
 
 exports.createProduct = async (req, res, next) => {
-    const category = await CategoryModel.findById(req.body.category_id);
+    // const category = await CategoryModel.findById(req.body.category_id);
 
-    let is_sizes_with_colors = false, is_colors_only = false, is_sizes_only = false;
-    if (category.attributes.includes("Size") && category.attributes.includes("Color")) {
-        is_sizes_with_colors = true;
-    } else if (category.attributes.includes("Color") && !category.attributes.includes("Size")) {
-        is_colors_only = true;
-    } else if (category.attributes.includes("Size") && !category.attributes.includes("Color")) {
-        is_sizes_only = true;
-    }
+    // let is_sizes_with_colors = false, is_colors_only = false, is_sizes_only = false;
+    // if (category.attributes.includes("Size") && category.attributes.includes("Color")) {
+    //     is_sizes_with_colors = true;
+    // } else if (category.attributes.includes("Color") && !category.attributes.includes("Size")) {
+    //     is_colors_only = true;
+    // } else if (category.attributes.includes("Size") && !category.attributes.includes("Color")) {
+    //     is_sizes_only = true;
+    // }
+    let is_sizes_with_colors = true;
 
-    if (!is_sizes_with_colors && !is_colors_only && !is_sizes_only) {
-        return res.status(400).json({
-            message: "Product must have at least one attribute (Size or Color)"
-        });
-    }
+    // if (!is_sizes_with_colors && !is_colors_only && !is_sizes_only) {
+    //     return res.status(400).json({
+    //         message: "Product must have at least one attribute (Size or Color)"
+    //     });
+    // }
 
     const title = req.body.title;
     const store_id = req.body.store_id;
     const category_id = req.body.category_id;
     const brand_id = req.body.brand_id;
+    const is_feature = req.body.is_feature;
 
     try {
         const product = await ProductModel.create({
@@ -33,8 +35,6 @@ exports.createProduct = async (req, res, next) => {
             category_id,
             brand_id,
             is_sizes_with_colors,
-            is_colors_only,
-            is_sizes_only,
         });
         res.status(200).json({
             success: true,
