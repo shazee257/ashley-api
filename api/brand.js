@@ -1,13 +1,12 @@
 const router = require('express').Router();
 const { upload } = require('../utils/utils');
-const { chargeCreditCard } = require('../middlewares/authorizenet');
+// const { chargeCreditCard } = require('../middlewares/authorizenet');
 
 const {
     createBrand, uploadImage,
     getBrand,
     getAllBrands,
     updateBrand, deleteBrand,
-    test
 } = require('../controllers/brand');
 
 router.post('/', upload("brands").single('image'), createBrand);

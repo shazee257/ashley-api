@@ -3,10 +3,13 @@ const Schema = mongoose.Schema;
 
 const orderSchema = new Schema(
     {
-        orderDate: { type: Date, default: Date.now },
+        order_date: { type: Date, default: Date.now },
+        payment_id: String,
+
         customer_name: String,
         customer_email: String,
         customer_phone: String,
+
         address: {
             first_name: String,
             last_name: String,
@@ -33,7 +36,7 @@ const orderSchema = new Schema(
 
         orderTotal: Number,
 
-        orderStatus: { type: String, enum: ["pending", "processing", "delivered", "cancelled"] },
+        orderStatus: { type: String, enum: ["processing", "delivered", "cancelled"] },
     },
     { timestamps: true }
 );
@@ -54,4 +57,4 @@ orderSchema.set('toJSON', {
     virtuals: true
 });
 
-module.exports = mongoose.model("cart", orderSchema);
+module.exports = mongoose.model("order", orderSchema);
