@@ -1,8 +1,8 @@
 const router = require('express').Router();
 
-const { addToCart } = require('../controllers/order');
+const { createOrder } = require('../controllers/order');
 
-router.post('/:userId', addToCart);
+router.post('/:userId', createOrder);
 
 
 

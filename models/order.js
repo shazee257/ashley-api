@@ -3,14 +3,14 @@ const Schema = mongoose.Schema;
 
 const orderSchema = new Schema(
     {
-        order_date: { type: Date, default: Date.now },
         payment_id: String,
 
+        user_id: { type: Schema.Types.ObjectId, ref: "user" },
         customer_name: String,
         customer_email: String,
         customer_phone: String,
 
-        address: {
+        shipping_address: {
             first_name: String,
             last_name: String,
             address: String,
@@ -20,8 +20,6 @@ const orderSchema = new Schema(
             zip_code: String,
             phone_no: String,
         },
-
-        user_id: { type: Schema.Types.ObjectId, ref: "user" },
         products: [{
             title: String,
             size: String,
@@ -31,12 +29,10 @@ const orderSchema = new Schema(
             quantity: Number,
             image: String,
             total: Number,
-            product_id: { type: Schema.Types.ObjectId, ref: "product" },
         }],
-
-        orderTotal: Number,
-
-        orderStatus: { type: String, enum: ["processing", "delivered", "cancelled"] },
+        shipping_price: { Number, default: 0 },
+        order_total: Number,
+        order_status: { type: String, enum: ["processing", "delivered", "cancelled"] },
     },
     { timestamps: true }
 );
