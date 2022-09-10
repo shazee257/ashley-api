@@ -1,179 +1,43 @@
 const OrderModel = require('../models/order');
-
-// // Add to Cart
-// exports.createOrder = async (req, res, next) => {
-//     try {
-//         const {
-//             product_id,
-//             title, size, color, sku, price, quantity, image
-//         } = req.body;
-
-//         const cart = await OrderModel.findOne({ user_id: req.params.userId });
-//         let total = 0;
-
-//         // return console.log(cart);   
-//         if (cart) {
-//             const product = cart.products.find((p) => p.sku === sku);
-
-//             if (product) {
-//                 product.quantity += Number(quantity);
-//                 product.total = product.quantity * Number(price);
-//             } else {
-//                 cart.products.push({
-//                     product_id,
-//                     title, size, color, sku, price, quantity, image,
-//                     total: Number(quantity) * Number(price),
-
-//                 });
-//             }
-//             cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
-//             await cart.save();
-//         } else {
-//             const newCart = new OrderModel({
-//                 user_id: req.params.userId,
-//                 products: [{
-//                     product_id,
-//                     title, size, color, sku, price, quantity, image,
-//                     total: Number(quantity) * Number(price),
-
-//                 }],
-//                 cartTotal: total
-//             });
-
-//             await newCart.save();
-//         }
-
-//         res.status(200).json({
-//             message: 'Product added to cart successfully'
-//         });
-//     } catch (error) {
-//         next(error);
-//     }
-// }
-
-// // Get Cart
-// exports.getCart = async (req, res, next) => {
-//     try {
-//         const { userId } = req.params;
-
-//         const cart = await OrderModel.findOne({ user_id: userId });
-
-//         res.status(200).json({
-//             message: 'Cart retrieved successfully',
-//             cart,
-//         });
-//     } catch (error) {
-//         next(error);
-//     }
-// }
-
-// // Update Cart by index
-// exports.updateCart = async (req, res, next) => {
-//     try {
-//         const { userId } = req.params;
-//         const { index, quantity } = req.body;
-
-//         const cart = await OrderModel.findOne({ user_id: userId });
-
-//         if (cart) {
-//             cart.products[index].quantity = Number(quantity);
-//             cart.products[index].total = cart.products[index].price * cart.products[index].quantity;
-//             cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
-
-//             await cart.save();
-
-//             res.status(200).json({
-//                 message: 'Cart updated successfully',
-//             });
-//         } else {
-//             res.status(404).json({
-//                 message: 'Cart not found',
-//             });
-//         }
-//     } catch (error) {
-//         next(error);
-//     }
-// }
-
-// // Delete Cart Item by index
-// exports.removeCartItem = async (req, res, next) => {
-//     try {
-//         const { userId } = req.params;
-//         const { index } = req.body;
-
-//         const cart = await OrderModel.findOne({ user_id: userId });
-
-//         if (cart) {
-//             cart.products.splice(index, 1);
-//             cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
-
-//             await cart.save();
-
-//             res.status(200).json({
-//                 message: 'Cart updated successfully',
-//             });
-//         } else {
-//             res.status(404).json({
-//                 message: 'Cart not found',
-//             });
-//         }
-//     } catch (error) {
-//         next(error);
-//     }
-// }
-
-// // Delete Cart
-// exports.deleteCart = async (req, res, next) => {
-//     try {
-//         const { userId } = req.params;
-
-//         const cart = await OrderModel.findOne({ user_id: userId });
-
-//         if (cart) {
-//             await cart.remove();
-//         }
-
-//         res.status(200).json({
-//             message: 'Cart deleted successfully'
-//         });
-//     } catch (error) {
-//         next(error);
-//     }
-// }
+const ProductModel = require('../models/product');
 
 // create order
 exports.createOrder = async (req, res, next) => {
     try {
         const {
-            // user
+            // user or customer info
             user_id,
-            customer_name,
-            customer_email,
-            customer_phone,
+            customer_name, customer_email, customer_phone,
 
             // shipping address object
             shipping_address,
 
             // products and total amount
-            products,
-            shipping_price,
-            order_total,
-            order_status
+            products, shipping_price, total_amount,
+            status
         } = req.body;
 
         const order = new OrderModel({
-            user_id,
-            customer_name,
-            customer_email,
-            customer_phone,
+            user_id, customer_name, customer_email, customer_phone,
             shipping_address,
             products,
-            shipping_price,
-            order_total,
-            order_status
+            shipping_price, total_amount,
+            status
+        });
+
+        products.forEach(async (p) => {
+            await ProductModel.findByIdAndUpdate(p.product_id,
+                { $inc: { "variants.$[v].features.$[f].quantity": -p.quantity } },
+                {
+                    arrayFilters: [
+                        { "v.size": p.size },
+                        { "f.sku": p.sku }
+                    ],
+                });
         });
 
         await order.save();
+
 
         res.status(200).json({
             message: 'Order created successfully',
@@ -184,3 +48,51 @@ exports.createOrder = async (req, res, next) => {
     }
 }
 
+// get order by user
+exports.getOrdersByUser = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+
+        const orders = await OrderModel.find({ user_id: userId });
+
+        res.status(200).json({
+            message: 'Orders retrieved successfully',
+            orders,
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// get all orders for dashboard
+exports.getAllOrders = async (req, res, next) => {
+    try {
+        const orders = await OrderModel.find();
+
+        res.status(200).json({
+            message: 'Orders retrieved successfully',
+            orders,
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+// order tracking
+exports.orderTracking = async (req, res, next) => {
+    try {
+        const { order_id, email } = req.body;
+
+        const order = await OrderModel.findOne({ _id: order_id, customer_email: email });
+
+        res.status(200).json({
+            message: 'Order status retrieved successfully',
+            order_status: {
+                status: order.status,
+                lastUpdated: order.updatedAt,
+            },
+        });
+    } catch (error) {
+        next(error);
+    }
+}

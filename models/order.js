@@ -29,10 +29,11 @@ const orderSchema = new Schema(
             quantity: Number,
             image: String,
             total: Number,
+            product_id: { type: Schema.Types.ObjectId, ref: 'product' },
         }],
-        shipping_price: { Number, default: 0 },
-        order_total: Number,
-        order_status: { type: String, enum: ["processing", "delivered", "cancelled"] },
+        shipping_price: { type: Number, default: 0 },
+        total_amount: Number,
+        status: { type: String, enum: ["processing", "delivered", "cancelled"] },
     },
     { timestamps: true }
 );
