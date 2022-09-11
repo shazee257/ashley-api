@@ -16,10 +16,7 @@ exports.createColor = async (req, res, next) => {
             next(error);
         }
     } else {
-        next({
-            status: 400,
-            message: 'Please upload an image',
-        });
+        res.status(400).json({ message: 'Please upload an image' });
     }
 };
 
