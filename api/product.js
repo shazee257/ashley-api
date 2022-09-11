@@ -16,7 +16,7 @@ const {
 
 router.post('/', createProduct);
 router.post('/:productId', addVariant); //add new variant to product
-router.post('/:productId/:variantId', upload("products").array('files', 10), addFeature); //add new feature to variant product
+router.post('/:productId/:variantId', upload("products").array('images', 10), addFeature); //add new feature to variant product
 
 router.get('/', getProducts);
 router.get("/featured", getFeaturedProducts);
