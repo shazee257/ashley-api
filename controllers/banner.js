@@ -18,6 +18,7 @@ exports.createBanner = async (req, res, next) => {
         image: req.file.filename,
         url: req.body.url,
         type: req.body.type,
+        is_active: req.body.is_active,
         category_id: req.body.type === 'category' ? req.body.category_id : null,
     }
 
@@ -70,6 +71,7 @@ exports.updateBanner = async (req, res, next) => {
         url: req.body.url,
         type: req.body.type,
         category_id: req.body.type === 'category' ? req.body.category_id : null,
+        is_active: req.body.is_active,
     }
 
     try {
@@ -86,24 +88,25 @@ exports.updateBanner = async (req, res, next) => {
 
 // upload banner image
 exports.uploadBannerImage = async (req, res, next) => {
-    if (req.file) {
-        thumbnail(req, "banners");
-        try {
-            const banner = await BannerModel.findByIdAndUpdate(req.params.id, { image: req.file.filename }, { new: true });
-            res.status(200).json({
-                success: true,
-                banner,
-                message: 'Banner image uploaded successfully',
-            });
-        } catch (error) {
-            next(error);
-        }
-    } else {
-        res.status(200).json({
+    if (!req.file) {
+        return res.status(400).json({
             success: false,
-            message: 'No image uploaded',
+            message: 'Please upload an image'
         });
     }
+
+    thumbnail(req, "banners");
+    try {
+        const banner = await BannerModel.findByIdAndUpdate(req.params.id, { image: req.file.filename }, { new: true });
+        res.status(200).json({
+            success: true,
+            banner,
+            message: 'Banner image uploaded successfully',
+        });
+    } catch (error) {
+        next(error);
+    }
+
 }
 
 // delete banner
