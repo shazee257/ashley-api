@@ -33,7 +33,7 @@ const orderSchema = new Schema(
         }],
         shipping_price: { type: Number, default: 0 },
         total_amount: Number,
-        status: { type: String, enum: ["processing", "delivered", "cancelled"] },
+        status: { type: String, enum: ["pending", "processing", "delivered", "cancelled"] },
     },
     { timestamps: true }
 );
@@ -41,17 +41,8 @@ const orderSchema = new Schema(
 orderSchema.set('toJSON', {
     transform: function (doc, ret, opt) {
         delete ret['__v'];
-        delete ret['updatedAt'];
         return ret;
     }
 })
-
-orderSchema.virtual('id').get(function () {
-    return this._id;
-});
-
-orderSchema.set('toJSON', {
-    virtuals: true
-});
 
 module.exports = mongoose.model("order", orderSchema);

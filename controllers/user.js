@@ -32,12 +32,10 @@ exports.getUsers = async (req, res, next) => {
     try {
         const users = await UserModel.find({ is_deleted: false })
             .populate('store_id').sort({ created_at: -1 });
-
         res.status(200).json({ success: true, users });
     } catch (error) {
         next(error);
     }
-
 };
 
 // Register a user

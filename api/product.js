@@ -5,7 +5,6 @@ const { upload } = require('../utils/utils');
 const {
     createProduct, addVariant, addFeature,
     // getProductVariants,
-
     deleteProduct, deleteVariant, deleteFeature,
     getProductBySlug, getProduct, getProducts, getFeaturedProducts,
     getDiscountedProducts, getDiscountedProductsCategories, getDiscountedProductsInCategory,
