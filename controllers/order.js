@@ -67,7 +67,9 @@ exports.getOrdersByUser = async (req, res, next) => {
 // get all orders for dashboard
 exports.getAllOrders = async (req, res, next) => {
     try {
-        const orders = await OrderModel.find().lean();
+        const orders = await OrderModel.find()
+            .sort({ createdAt: -1 })
+            .lean();
 
         res.status(200).json({
             message: 'Orders retrieved successfully',
