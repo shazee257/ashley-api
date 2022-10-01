@@ -464,3 +464,20 @@ exports.getDiscountedProductsInCategory = async (req, res, next) => {
         next(error);
     }
 }
+
+// get products by store zip code
+exports.getProductsByStoreZipCode = async (req, res, next) => {
+    try {
+        const products = await ProductModel.find({ is_deleted: false })
+            .populate('category_id', 'title image slug parent_id discount_image')
+            .populate('store_id', 'title banner zip')
+            .populate('variants.features.color_id', 'title image')
+            .sort({ createdAt: -1 }).lean();
+
+        const productsByZipCode = products.filter((product) => product.store_id.zip == req.params.zipCode);
+
+        res.status(200).json({ products: productsByZipCode });
+    } catch (error) {
+        next(error);
+    }
+}

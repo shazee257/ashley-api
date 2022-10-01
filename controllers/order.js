@@ -38,7 +38,6 @@ exports.createOrder = async (req, res, next) => {
 
         await order.save();
 
-
         res.status(200).json({
             message: 'Order created successfully',
             order,

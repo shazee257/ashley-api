@@ -10,7 +10,7 @@ const {
     getDiscountedProducts, getDiscountedProductsCategories, getDiscountedProductsInCategory,
     updateProduct, updateVariant, updateFeature,
     uploadImages,
-
+    getProductsByStoreZipCode
 } = require('../controllers/product');
 
 router.post('/', createProduct);
@@ -19,6 +19,7 @@ router.post('/:productId/:variantId', upload("products").array('images', 10), ad
 
 router.get('/', getProducts);
 router.get("/featured", getFeaturedProducts);
+router.get("/zipcode/:zipCode", getProductsByStoreZipCode);
 
 // get discounted products
 router.get("/discounted", getDiscountedProducts);

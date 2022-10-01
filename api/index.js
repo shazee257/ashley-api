@@ -11,6 +11,7 @@ router.use('/wishlist', require('./wishlist'));
 router.use('/banners', require('./banner'));
 router.use('/reviews', require('./reviews'));
 router.use('/orders', require('./order'));
+router.use('/coupons', require('./coupons'));
 
 
 module.exports = router;
