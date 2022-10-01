@@ -14,7 +14,10 @@ exports.getAllCoupons = async (req, res, next) => {
 exports.createCoupon = async (req, res, next) => {
     try {
         const coupon = await CouponsModel.create(req.body);
-        res.status(200).json(coupon);
+        res.status(200).json({
+            coupon,
+            message: 'Coupon created successfully'
+        });
     } catch (error) {
         next(error);
     }
@@ -34,7 +37,10 @@ exports.getCoupon = async (req, res, next) => {
 exports.updateCoupon = async (req, res, next) => {
     try {
         const coupon = await CouponsModel.findByIdAndUpdate(req.params.id, req.body, { new: true }).lean();
-        res.status(200).json(coupon);
+        res.status(200).json({
+            coupon,
+            message: 'Coupon updated successfully'
+        });
     } catch (error) {
         next(error);
     }
@@ -44,7 +50,10 @@ exports.updateCoupon = async (req, res, next) => {
 exports.deleteCoupon = async (req, res, next) => {
     try {
         const coupon = await CouponsModel.findByIdAndUpdate(req.params.id, { isActive: false }, { new: true }).lean();
-        res.status(200).json(coupon);
+        res.status(200).json({
+            coupon,
+            message: 'Coupon deleted successfully'
+        });
     } catch (error) {
         next(error);
     }
