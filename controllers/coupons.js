@@ -3,7 +3,8 @@ const CouponsModel = require('../models/coupons');
 // get all coupons
 exports.getAllCoupons = async (req, res, next) => {
     try {
-        const coupons = await CouponsModel.find({ isActive: true }).sort({ createdAt: -1 }).lean();
+        const coupons = await CouponsModel.find({ isActive: true })
+            .sort({ createdAt: -1 }).lean();
         res.status(200).json(coupons);
     } catch (error) {
         next(error);
@@ -23,10 +24,11 @@ exports.createCoupon = async (req, res, next) => {
     }
 };
 
-// get coupon
+// get coupon by code
 exports.getCoupon = async (req, res, next) => {
     try {
-        const coupon = await CouponsModel.find({ _id: req.params.id, isActive: true }).lean();
+        const { code } = req.params;
+        const coupon = await CouponsModel.findOne({ code, isActive: true }).lean();
         res.status(200).json(coupon);
     } catch (error) {
         next(error);

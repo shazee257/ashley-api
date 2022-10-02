@@ -10,7 +10,7 @@ const {
 
 router.post('/', createCoupon);
 router.get('/', getAllCoupons);
-router.get('/:id', getCoupon);
+router.get('/:code', getCoupon);
 router.put('/:id', updateCoupon);
 router.delete('/:id', deleteCoupon);
 

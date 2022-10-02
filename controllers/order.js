@@ -7,7 +7,8 @@ exports.createOrder = async (req, res, next) => {
         const {
             // user or customer info
             user_id,
-            customer_name, customer_email, customer_phone,
+            customer_name, customer_email,
+            //  customer_phone,
 
             // shipping address object
             shipping_address,
@@ -18,7 +19,8 @@ exports.createOrder = async (req, res, next) => {
         } = req.body;
 
         const order = new OrderModel({
-            user_id, customer_name, customer_email, customer_phone,
+            user_id, customer_name, customer_email,
+            // customer_phone,
             shipping_address,
             products,
             shipping_price, total_amount,
@@ -51,8 +53,7 @@ exports.createOrder = async (req, res, next) => {
 exports.getOrdersByUser = async (req, res, next) => {
     try {
         const { userId } = req.params;
-
-        const orders = await OrderModel.find({ user_id: userId });
+        const orders = await OrderModel.find({ user_id: userId }).sort({ createdAt: -1 }).lean();
 
         res.status(200).json({
             message: 'Orders retrieved successfully',

@@ -9,7 +9,7 @@ const orderSchema = new Schema(
         user_id: { type: Schema.Types.ObjectId, ref: "user" },
         customer_name: String,
         customer_email: String,
-        customer_phone: String,
+        // customer_phone: String,
 
         shipping_address: {
             // first_name: String,
