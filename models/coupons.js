@@ -10,4 +10,11 @@ const couponsSchema = new Schema(
     { timestamps: true }
 );
 
+// upper case the code before saving
+couponsSchema.pre('save', function (next) {
+    this.code = this.code.toUpperCase();
+    next();
+});
+
+
 module.exports = mongoose.model('coupons', couponsSchema);

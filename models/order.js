@@ -5,14 +5,15 @@ const orderSchema = new Schema(
     {
         payment_id: String,
 
+        // Customer info
         user_id: { type: Schema.Types.ObjectId, ref: "user" },
         customer_name: String,
         customer_email: String,
         customer_phone: String,
 
         shipping_address: {
-            first_name: String,
-            last_name: String,
+            // first_name: String,
+            // last_name: String,
             address: String,
             unit: String,
             city: String,
