@@ -5,6 +5,7 @@ const connectDB = require('./config/db');
 const cors = require("cors");
 const asyncHandler = require('express-async-handler');
 const api = require('./api');
+const http = require('http');
 
 // Load config
 dotenv.config({ path: './config/config.env' });
@@ -52,7 +53,13 @@ app.use("/",
     api
 );
 
-app.listen(port, () =>
-    console.log(`API running on http://localhost:${port} on ${env} mode`)
-);
 
+http
+    .createServer(app)
+    .on("error", (ex) => {
+        console.log(ex);
+        console.log("Can't connect to server.");
+    })
+    .listen(port, () => {
+        console.log(`Server Started :: ${port}`);
+    });
