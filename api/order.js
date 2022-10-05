@@ -7,8 +7,8 @@ const {
     orderTracking,
 } = require('../controllers/order');
 
-router.post('/', createOrder);
 router.post('/tracking', orderTracking);
+router.post('/', createOrder);
 
 router.get('/:userId', getOrdersByUser);
 router.get('/', getAllOrders);

@@ -18,21 +18,6 @@ function chargeCreditCard(callback) {
     orderDetails.setInvoiceNumber('INV-12345');
     orderDetails.setDescription('Product Description');
 
-    var tax = new ApiContracts.ExtendedAmountType();
-    tax.setAmount('4.26');
-    tax.setName('level2 tax name');
-    tax.setDescription('level2 tax');
-
-    var duty = new ApiContracts.ExtendedAmountType();
-    duty.setAmount('8.55');
-    duty.setName('duty name');
-    duty.setDescription('duty description');
-
-    var shipping = new ApiContracts.ExtendedAmountType();
-    shipping.setAmount('8.55');
-    shipping.setName('shipping name');
-    shipping.setDescription('shipping description');
-
     var billTo = new ApiContracts.CustomerAddressType();
     billTo.setFirstName('Ellen');
     billTo.setLastName('Johnson');
@@ -74,21 +59,6 @@ function chargeCreditCard(callback) {
     var lineItems = new ApiContracts.ArrayOfLineItem();
     lineItems.setLineItem(lineItemList);
 
-    var userField_a = new ApiContracts.UserField();
-    userField_a.setName('A');
-    userField_a.setValue('Aval');
-
-    var userField_b = new ApiContracts.UserField();
-    userField_b.setName('B');
-    userField_b.setValue('Bval');
-
-    var userFieldList = [];
-    userFieldList.push(userField_a);
-    userFieldList.push(userField_b);
-
-    var userFields = new ApiContracts.TransactionRequestType.UserFields();
-    userFields.setUserField(userFieldList);
-
     var transactionSetting1 = new ApiContracts.SettingType();
     transactionSetting1.setSettingName('duplicateWindow');
     transactionSetting1.setSettingValue('120');
@@ -107,13 +77,9 @@ function chargeCreditCard(callback) {
     var transactionRequestType = new ApiContracts.TransactionRequestType();
     transactionRequestType.setTransactionType(ApiContracts.TransactionTypeEnum.AUTHCAPTURETRANSACTION);
     transactionRequestType.setPayment(paymentType);
-    transactionRequestType.setAmount('100.00');
+    transactionRequestType.setAmount('101.00');
     transactionRequestType.setLineItems(lineItems);
-    transactionRequestType.setUserFields(userFields);
     transactionRequestType.setOrder(orderDetails);
-    transactionRequestType.setTax(tax);
-    transactionRequestType.setDuty(duty);
-    transactionRequestType.setShipping(shipping);
     transactionRequestType.setBillTo(billTo);
     transactionRequestType.setShipTo(shipTo);
     transactionRequestType.setTransactionSettings(transactionSettings);
@@ -126,8 +92,6 @@ function chargeCreditCard(callback) {
     console.log(JSON.stringify(createRequest.getJSON(), null, 2));
 
     var ctrl = new ApiControllers.CreateTransactionController(createRequest.getJSON());
-    //Defaults to sandbox
-    //ctrl.setEnvironment(SDKConstants.endpoint.production);
 
     ctrl.execute(function () {
 
@@ -170,7 +134,6 @@ function chargeCreditCard(callback) {
         else {
             console.log('Null Response.');
         }
-
         callback(response);
     });
 }

@@ -6,6 +6,7 @@ const cors = require("cors");
 const asyncHandler = require('express-async-handler');
 const api = require('./api');
 const http = require('http');
+// const bodyParser = require('body-parser');
 
 // Load config
 dotenv.config({ path: './config/config.env' });

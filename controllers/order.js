@@ -1,26 +1,26 @@
 const OrderModel = require('../models/order');
 const ProductModel = require('../models/product');
+const { chargeCreditCard } = require('../utils/chargeCreditCard');
 
 // create order
 exports.createOrder = async (req, res, next) => {
+    const {
+        // user or customer info
+        user_id,
+        customer_name, customer_email, customer_phone,
+
+        // shipping address object
+        shipping_address,
+
+        // products and total amount
+        products, shipping_price, total_amount,
+        status
+    } = req.body;
+
     try {
-        const {
-            // user or customer info
-            user_id,
-            customer_name, customer_email,
-            //  customer_phone,
-
-            // shipping address object
-            shipping_address,
-
-            // products and total amount
-            products, shipping_price, total_amount,
-            status
-        } = req.body;
-
+        // create order
         const order = new OrderModel({
-            user_id, customer_name, customer_email,
-            // customer_phone,
+            user_id, customer_name, customer_email, customer_phone,
             shipping_address,
             products,
             shipping_price, total_amount,
@@ -40,10 +40,17 @@ exports.createOrder = async (req, res, next) => {
 
         await order.save();
 
-        res.status(200).json({
-            message: 'Order created successfully',
-            order,
+        // charge credit card
+        chargeCreditCard((response) => {
+            if (response.messages.resultCode === "Ok") {
+                res.status(200).json({
+                    message: 'Payment received and Order created successfully',
+                    order,
+                    response,
+                });
+            }
         });
+
     } catch (error) {
         next(error);
     }
@@ -98,3 +105,4 @@ exports.orderTracking = async (req, res, next) => {
         next(error);
     }
 }
+
