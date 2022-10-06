@@ -12,7 +12,7 @@ const options = {
 
 const connectDB = async (user, pass, dbName) => {
     const conn = await mongoose.connect(`mongodb+srv://${user}:${pass}@cluster0-n25kv.mongodb.net/${dbName}?retryWrites=true&w=majority`, options);
-    console.log(`MongoDB Connected: ${conn.connection.db.databaseName}`);
+    console.log(`MongoDB Connected: ${conn.connection.db.databaseName.substring(0, 3)}******`);
 }
 
 module.exports = connectDB;
