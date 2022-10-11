@@ -34,9 +34,12 @@ const port = process.env.PORT || 3000;
 const env = app.get('env');
 
 // morgan lib only for development environment logs only
-if (env === 'development') {
-    app.use(morgan('dev'));
-}
+// if (env === 'development') {
+//     app.use(morgan('dev'));
+// }
+
+// morgan
+app.use(morgan('dev'));
 
 app.use("/",
     asyncHandler(async (req, res, next) => {
