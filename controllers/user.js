@@ -541,29 +541,30 @@ exports.uploadUserImage = async (req, res, next) => {
 
 // verify accessToken and return user
 exports.verifyAccessToken = async (req, res, next) => {
-    let accessToken = req.get("Authorization");
-
-    try {
-        const session = await SessionModel.findOne({
-            token: accessToken,
-            expiry_date: { $gte: new Date() },
-        }).populate("user_id");
-
-        if (!session) {
-            return res.status(403).json({
-                success: false,
-                error: "You're not authorized!"
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            user: session.user_id
+    let { token } = req.headers;
+    if (!token) {
+        return res.status(403).json({
+            success: false,
+            message: "Access denied."
         });
-
-    } catch (error) {
-        next(error);
     }
+
+    const session = await SessionModel.findOne({
+        token: token,
+        expiry_date: { $gte: new Date() },
+    }).populate("user_id");
+
+    if (!session) {
+        return res.status(403).json({
+            success: false,
+            error: "You're not authorized!"
+        });
+    }
+
+    res.status(200).json({
+        success: true,
+        user: session.user_id
+    });
 }
 
 // email confirmation - verification
