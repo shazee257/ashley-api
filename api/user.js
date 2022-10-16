@@ -12,6 +12,8 @@ const {
     emailConfirmation
 } = require('../controllers/user');
 
+const { loggedIn } = require('../middlewares');
+
 
 router.post('/register', upload("users").single('image'), registerUser);
 router.post('/login', loginUser);
@@ -24,7 +26,7 @@ router.get('/verify-token', verifyAccessToken);
 
 router.get('/:userId', getUser);
 
-router.get('/', getUsers);
+router.get('/', loggedIn, getUsers);
 
 router.delete('/:userId', deleteUser);
 

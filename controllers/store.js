@@ -1,5 +1,8 @@
 const StoreModel = require('../models/store');
 const { thumbnail } = require('../utils/utils');
+// const { parse } = require('json2csv');
+// const fs = require('fs');
+// const path = require('path');
 
 // create a new store
 exports.createStore = async (req, res, next) => {
@@ -65,6 +68,19 @@ exports.getAllStores = async (req, res, next) => {
     try {
         const stores = await StoreModel.find({ is_deleted: false })
             .sort({ title: 1 });
+
+        // const fields = ['title', 'email', 'banner', 'city', 'phone_no', 'createdAt'];
+        // const csv = parse(stores, { fields });
+
+        // const path = 'src/assets/';
+        // fs.mkdirSync(path, { recursive: true });
+        // fs.writeFileSync(path + 'stores.csv', csv);
+
+        // // delete file after 20 seconds
+        // setTimeout(() => {
+        //     fs.unlinkSync(path + 'stores.csv');
+        // }, 20000);
+
         res.status(200).json({
             success: true,
             stores
