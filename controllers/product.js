@@ -45,7 +45,7 @@ exports.getProducts = async (req, res, next) => {
     try {
         const products = await ProductModel.find({ is_deleted: false })
             .populate('category_id', 'title image slug parent_id discount_image')
-            .populate('store_id', 'title banner')
+            .populate('store_id', 'title banner zip')
             .populate('variants.features.color_id', 'title image')
             .sort({ createdAt: -1 }).lean();
         res.status(200).json({ success: true, products });
