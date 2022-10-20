@@ -6,7 +6,6 @@ const cors = require("cors");
 const asyncHandler = require('express-async-handler');
 const api = require('./api');
 const http = require('http');
-// const bodyParser = require('body-parser');
 
 // Load config
 dotenv.config({ path: './config/config.env' });
@@ -19,9 +18,7 @@ const app = express();
 
 // Middlewares
 app.use(cors());
-// limit request size
 app.use(express.json({ limit: '200kb' }));;
-// app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/uploads', express.static('src/assets/uploads'));
 
 // Port assign
@@ -50,7 +47,6 @@ app.use("/",
     }),
     api
 );
-
 
 http
     .createServer(app)

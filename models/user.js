@@ -26,6 +26,8 @@ const userSchema = new Schema(
         // for store user
         store_id: { type: Schema.Types.ObjectId, ref: 'store' },
 
+        token: { type: String },
+
     },
     { timestamps: true }
 );

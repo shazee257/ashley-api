@@ -1,12 +1,13 @@
 const UserModel = require('../models/user');
 const SessionModel = require('../models/session');
 const AddressModel = require('../models/address');
-var crypto = require("crypto");
+const crypto = require("crypto");
 const bcrypt = require('bcrypt');
 const { comparePassword, verifyIdWithToken } = require("../utils/utils");
 const moment = require("moment");
 const { transporter } = require('../utils/mailSender');
 const { thumbnail } = require('../utils/utils');
+const jwt = require('jsonwebtoken');
 
 // Get user by id
 exports.getUser = async (req, res, next) => {
@@ -265,12 +266,33 @@ exports.loginUser = async (req, res, next) => {
             });
         }
 
-        const session = await SessionModel.create({
-            token: crypto.randomBytes(16).toString("base64"),
+        const token = jwt.sign({
             user_id: user._id,
-            expiry_date: new Date(moment().add(process.env.SESSION_EXPIRY_DAYS, "days"))
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            role: user.role,
+        },
+            process.env.JWT_SECRET,
+            { expiresIn: 60 * 60 * 24 * 7 }
+        );
+
+        user.token = token;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            token,
+            message: 'User logged in successfully.'
         });
-        res.status(200).json({ success: true, user, session, message: "Login successful!", });
+
+
+        // const session = await SessionModel.create({
+        //     token: crypto.randomBytes(16).toString("base64"),
+        //     user_id: user._id,
+        //     expiry_date: new Date(moment().add(process.env.SESSION_EXPIRY_DAYS, "days"))
+        // });
+        // res.status(200).json({ success: true, user, session, message: "Login successful!", });
 
     } catch (error) {
         next(error);
