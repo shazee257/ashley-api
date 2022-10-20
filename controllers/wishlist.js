@@ -12,6 +12,7 @@ exports.addToWishlist = async (req, res, next) => {
             // isProductExist = true in wishlist
             if (isProductExist) {
                 res.status(200).json({
+                    success: true,
                     message: 'Product already in wishlist'
                 });
             } else {
