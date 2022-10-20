@@ -266,14 +266,15 @@ exports.loginUser = async (req, res, next) => {
             });
         }
 
-        const token = jwt.sign({
+        const userObj = {
             user_id: user._id,
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
             role: user.role,
-        },
-            process.env.JWT_SECRET,
+        }
+
+        const token = jwt.sign(userObj, process.env.JWT_SECRET,
             { expiresIn: 60 * 60 * 24 * 7 }
         );
 
@@ -282,17 +283,9 @@ exports.loginUser = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            token,
-            message: 'User logged in successfully.'
+            authData: { ...userObj, token },
+            message: "Login successful!"
         });
-
-
-        // const session = await SessionModel.create({
-        //     token: crypto.randomBytes(16).toString("base64"),
-        //     user_id: user._id,
-        //     expiry_date: new Date(moment().add(process.env.SESSION_EXPIRY_DAYS, "days"))
-        // });
-        // res.status(200).json({ success: true, user, session, message: "Login successful!", });
 
     } catch (error) {
         next(error);

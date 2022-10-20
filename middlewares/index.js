@@ -1,28 +1,28 @@
-const SessionModel = require("../models/session");
+const { verify } = require('jsonwebtoken');
 
-exports.loggedIn = async (req, res, next) => {
-    let { token } = req.headers;
-    if (!token) {
-        return res.status(403).json({
-            success: false,
-            message: "Access denied."
+exports.loggedIn = (req, res, next) => {
+    decodeToken(req)
+        .then((data) => {
+            req.user = data.user;
+            next();
+        })
+        .catch((ex) => {
+            console.error(ex);
+            res.status(403).json({
+                message: "You're not authorized!, JWT error",
+            });
         });
-    }
+}
 
-    const session = await SessionModel.findOne({
-        token: token,
-        expiry_date: { $gte: new Date() },
-    }).populate("user_id");
-
-    if (!session) {
-        return res.status(403).json({
-            success: false,
-            error: "You're not authorized!"
+function decodeToken(req) {
+    return new Promise((resolve, reject) => {
+        let { token } = req.headers;
+        verify(token, process.env.JWT_SECRET, (err, decoded) => {
+            if (err === null) {
+                resolve(decoded);
+            } else {
+                reject(err);
+            }
         });
-    }
-
-    req.user = session.user_id;
-    req.session = session;
-    next();
-};
-
+    });
+}
