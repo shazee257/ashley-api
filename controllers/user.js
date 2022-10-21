@@ -238,58 +238,63 @@ exports.loginUser = async (req, res, next) => {
         });
     }
 
-    try {
-        const user = await UserModel.findOne({ email: req.body.email, is_deleted: false });
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: 'email not found'
-            });
-        }
-
-        if (user.is_verified === false) {
-            return res.status(400).json({
-                success: false,
-                message: 'Please verify your email first'
-            });
-        }
-
-        const isEqual = await comparePassword(
-            req.body.password,
-            user.password
-        );
-
-        if (!isEqual) {
-            return res.status(400).json({
-                status: 400,
-                message: "Incorrect password, please try again",
-            });
-        }
-
-        const userObj = {
-            user_id: user._id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email,
-            role: user.role,
-        }
-
-        const token = jwt.sign(userObj, process.env.JWT_SECRET,
-            { expiresIn: 60 * 60 * 24 * 7 }
-        );
-
-        user.token = token;
-        await user.save();
-
-        res.status(200).json({
-            success: true,
-            authData: { ...userObj, token },
-            message: "Login successful!"
+    // try {
+    const user = await UserModel.findOne({ email: req.body.email, is_deleted: false });
+    console.log(user, "user==============");
+    if (!user) {
+        return res.send({
+            status: 404,
+            success: false,
+            message: 'email not found'
         });
-
-    } catch (error) {
-        next(error);
     }
+
+    if (user.is_verified === false) {
+        return res.send({
+            status: 401,
+            success: false,
+            message: 'Please verify your email first'
+        });
+    }
+
+    const isEqual = await comparePassword(
+        req.body.password,
+        user.password
+    );
+
+    if (!isEqual) {
+        return res.send({
+            status: 400,
+            success: false,
+            message: "Incorrect password, please try again",
+        });
+    }
+
+    const userObj = {
+        user_id: user._id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        role: user.role,
+    }
+
+    const token = jwt.sign(userObj, process.env.JWT_SECRET,
+        { expiresIn: 60 * 60 * 24 * 7 }
+    );
+
+    user.token = token;
+    await user.save();
+
+    res.send({
+        status: 200,
+        success: true,
+        authData: { ...userObj, token },
+        message: "Login successful!"
+    });
+
+    // } catch (error) {
+    //     next(error);
+    // }
 }
 
 // Forgot password
