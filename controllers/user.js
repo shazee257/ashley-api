@@ -290,7 +290,7 @@ exports.loginUser = async (req, res, next) => {
         // set cookie
         res.cookie('jToken', token, {
             maxAge: 86_400_000,
-            // httpOnly: true
+            httpOnly: true
         });
 
         res.send({
@@ -307,7 +307,7 @@ exports.loginUser = async (req, res, next) => {
 
 // Logout
 exports.logoutUser = async (req, res, next) => {
-    res.clearCookie('jToken');
+    res.clearCookie('jToken', { httpOnly: true });
     res.send({
         status: 200,
         success: true,
