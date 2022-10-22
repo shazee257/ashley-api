@@ -17,7 +17,11 @@ connectDB(process.env.DATABASE_USER, process.env.DATABASE_PASSWORD, process.env.
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:3000', 'https://ashley-api.herokuapp.com'],
+    credentials: true
+}))
+
 app.use(express.json({ limit: '200kb' }));;
 app.use('/uploads', express.static('src/assets/uploads'));
 

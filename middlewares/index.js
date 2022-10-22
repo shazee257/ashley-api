@@ -5,10 +5,11 @@ exports.loggedIn = (req, res, next) => {
         .then((data) => {
             req.user = data.user;
             next();
-        })
-        .catch((ex) => {
+        }).catch((ex) => {
             console.error(ex);
-            res.status(403).json({
+            res.send({
+                status: 403,
+                success: false,
                 message: "You're not authorized!, JWT error",
             });
         });

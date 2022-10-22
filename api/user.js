@@ -3,6 +3,7 @@ const router = require('express').Router();
 const { upload } = require('../utils/utils');
 
 const {
+    logoutUser,
     registerUser, loginUser, forgotPassword, resetPassword, newPassword,
     changePassword, getUser, getUsers,
     deleteUser, deleteUsers, updateUser,
@@ -17,6 +18,7 @@ const { loggedIn } = require('../middlewares');
 
 router.post('/register', upload("users").single('image'), registerUser);
 router.post('/login', loginUser);
+router.post('/logout', logoutUser);
 router.post('/forgot-password', forgotPassword);
 router.get('/reset-password/:resetToken', resetPassword);
 router.put("/email-confirmation/:emailConfirmationToken", emailConfirmation);
