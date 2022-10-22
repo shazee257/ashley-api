@@ -232,7 +232,8 @@ exports.changePassword = async (req, res, next) => {
 // Login
 exports.loginUser = async (req, res, next) => {
     if (!req.body.password || !req.body.email) {
-        return res.status(400).json({
+        return res.send({
+            status: 400,
             success: false,
             message: 'Please fill all the fields.'
         });
@@ -287,7 +288,10 @@ exports.loginUser = async (req, res, next) => {
 
         const authData = { ...userObj, token };
         // set cookie
-        res.cookie('jToken', token, { maxAge: 86_400_000, httpOnly: true });
+        res.cookie('jToken', token, {
+            maxAge: 86_400_000,
+            // httpOnly: true
+        });
 
         res.send({
             status: 200,
