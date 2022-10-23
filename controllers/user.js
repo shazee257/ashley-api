@@ -291,8 +291,8 @@ exports.loginUser = async (req, res, next) => {
         res.cookie('jToken', token, {
             maxAge: 86_400_000,
             httpOnly: true,
-            secure: true,
-            sameSite: 'none'
+            secure: false,
+            sameSite: "None"
         });
 
         res.send({
