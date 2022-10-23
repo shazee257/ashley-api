@@ -292,6 +292,7 @@ exports.loginUser = async (req, res, next) => {
             maxAge: 86_400_000,
             httpOnly: true,
             secure: true,
+            sameSite: 'none'
         });
 
         res.send({
