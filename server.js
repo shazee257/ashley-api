@@ -18,7 +18,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://ashley-api.herokuapp.com'],
+    origin: ['http://localhost', 'https://ashley-api.herokuapp.com'],
     credentials: true
 }))
 
