@@ -49,7 +49,8 @@ exports.getWishlist = async (req, res, next) => {
         if (wishlist) {
             res.status(200).json({
                 success: true,
-                wishlist: wishlist.product_ids
+                wishlist: wishlist.product_ids,
+                wishlistCount: wishlist.product_ids.length
             });
         } else {
             res.status
