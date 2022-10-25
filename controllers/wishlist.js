@@ -55,6 +55,8 @@ exports.getWishlist = async (req, res, next) => {
         } else {
             res.status
             res.status(404).json({
+                wishlist: [],
+                wishlistCount: 0,
                 message: 'Wishlist not found'
             });
         }
@@ -73,10 +75,12 @@ exports.removeFromWishlist = async (req, res, next) => {
             wishlist.product_ids.splice(index, 1);
             await wishlist.save();
             res.status(200).json({
+                success: true,
                 message: 'Product removed from wishlist successfully'
             });
         } else {
             res.status(404).json({
+                success: false,
                 message: 'Wishlist not found'
             });
         }
