@@ -7,7 +7,7 @@ exports.addToWishlist = async (req, res, next) => {
         const wishlist = await wishlistModel.findOne({ user_id: req.params.userId });
 
         if (wishlist) {
-            const isProductExist = wishlist.product_ids.includes(req.params.productId);
+            const isProductExist = wishlist.product_ids.includes(req.body.productId);
 
             // isProductExist = true in wishlist
             if (isProductExist) {
@@ -16,7 +16,7 @@ exports.addToWishlist = async (req, res, next) => {
                     message: 'Product already in wishlist'
                 });
             } else {
-                wishlist.product_ids.push(req.params.productId);
+                wishlist.product_ids.push(req.body.productId);
                 await wishlist.save();
                 return res.status(200).json({
                     success: true,
@@ -27,7 +27,7 @@ exports.addToWishlist = async (req, res, next) => {
             // if wishlist doesn't exist, create new wishlist
             const newWishlist = new wishlistModel({
                 user_id: req.params.userId,
-                product_ids: [req.params.productId]
+                product_ids: [req.body.productId]
             });
             await newWishlist.save();
         }
@@ -71,16 +71,26 @@ exports.removeFromWishlist = async (req, res, next) => {
         const wishlist = await wishlistModel.findOne({ user_id: req.params.userId });
 
         if (wishlist) {
-            const index = wishlist.product_ids.indexOf(req.params.productId);
-            wishlist.product_ids.splice(index, 1);
-            await wishlist.save();
-            res.status(200).json({
-                success: true,
-                message: 'Product removed from wishlist successfully'
-            });
+            const index = wishlist.product_ids.indexOf(req.body.productId);
+            if (index > -1) {
+                wishlist.product_ids.splice(index, 1);
+                await wishlist.save();
+                res.send({
+                    success: true,
+                    status: 200,
+                    message: 'Product removed from wishlist successfully'
+                });
+            } else {
+                res.send({
+                    success: false,
+                    status: 404,
+                    message: 'Product not found in wishlist'
+                });
+            }
         } else {
             res.status(404).json({
                 success: false,
+                status: 404,
                 message: 'Wishlist not found'
             });
         }
