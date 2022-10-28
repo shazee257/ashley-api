@@ -41,25 +41,29 @@ exports.getUsers = async (req, res, next) => {
 
 // Register a user
 exports.registerUser = async (req, res, next) => {
-    if (!req.body.password || !req.body.confirm_password
-        || !req.body.email || !req.body.email_subscription) {
-        return res.status(400).json({
+    if (!req.body.password || !req.body.confirm_password || !req.body.email) {
+        return res.send({
+            status: 204, // No Content
             success: false,
-            message: 'Empty fields are not allowed.'
+            message: 'Please fill all the fields !!!'
         });
     }
 
+
     // password and confirm password should be same
     if (req.body.password !== req.body.confirm_password) {
-        return res.status(400).json({
+        return res.send({
+            status: 400, // Bad Request
             success: false,
             message: 'Password and confirm password should be same.'
         });
     }
 
+    console.log("req.body >>>>>", req.body);
     const userExisted = await UserModel.findOne({ email: req.body.email });
     if (userExisted) {
-        return res.status(409).json({
+        return res.send({
+            status: 409, // conflict
             success: false,
             message: 'User already existed.'
         });
@@ -136,10 +140,11 @@ exports.registerUser = async (req, res, next) => {
         });
 
         const user = await UserModel.create(req.body);
-        res.status(200).json({
+        res.send({
+            status: 200,
             success: true,
             user,
-            message: "User is created successfully."
+            message: "User created successfully."
         });
 
     } catch (error) {

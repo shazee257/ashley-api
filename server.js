@@ -11,7 +11,7 @@ const http = require('http');
 dotenv.config({ path: './config/config.env' });
 
 // connect DB
-connectDB(process.env.DATABASE_USER, process.env.DATABASE_PASSWORD, process.env.DATABASE_NAME);
+connectDB(process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME);
 
 // app init
 const app = express();
