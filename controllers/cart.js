@@ -1,4 +1,5 @@
 const CartModel = require('../models/cart');
+const { generateResponse } = require('../utils/utils');
 
 // Add to Cart
 exports.addToCart = async (req, res, next) => {
@@ -11,7 +12,6 @@ exports.addToCart = async (req, res, next) => {
         const cart = await CartModel.findOne({ user_id: req.params.userId });
         let total = 0;
 
-        // return console.log(cart);   
         if (cart) {
             const product = cart.products.find((p) => p.sku === sku);
 
@@ -28,6 +28,8 @@ exports.addToCart = async (req, res, next) => {
             }
             cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
             await cart.save();
+            generateResponse(true, 200, null, 'Product added to cart.', res);
+
         } else {
             const newCart = new CartModel({
                 user_id: req.params.userId,
@@ -39,28 +41,23 @@ exports.addToCart = async (req, res, next) => {
                 }],
                 cartTotal: total
             });
-
             await newCart.save();
+            generateResponse(true, 200, null, 'Product added to cart.', res);
         }
 
-        res.status(200).json({
-            message: 'Product added to cart successfully'
-        });
     } catch (error) {
         next(error);
     }
 }
 
 // Get Cart
-exports.getCart = async (req, res, next) => {    try {
+exports.getCart = async (req, res, next) => {
+    try {
         const { userId } = req.params;
-
         const cart = await CartModel.findOne({ user_id: userId });
 
-        res.status(200).json({
-            message: 'Cart retrieved successfully',
-            cart,
-        });
+        if (cart) generateResponse(true, 200, cart, 'Cart fetched successfully', res);
+        else generateResponse(false, 404, null, 'Cart not found', res);
     } catch (error) {
         next(error);
     }

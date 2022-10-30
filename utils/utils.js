@@ -116,3 +116,13 @@ exports.upload = (folderName) => {
     }
   })
 }
+
+// generate response 
+exports.generateResponse = (success, statusCode, data, message, res) => {
+  return res.send({
+    success,
+    statusCode,
+    data,
+    message
+  });
+}
