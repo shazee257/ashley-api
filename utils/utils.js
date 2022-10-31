@@ -119,7 +119,7 @@ exports.upload = (folderName) => {
 
 // generate response 
 exports.generateResponse = (success, statusCode, data, message, res) => {
-  return res.send({
+  res.send({
     success,
     statusCode,
     data,

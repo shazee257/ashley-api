@@ -10,22 +10,21 @@ exports.addToCart = async (req, res, next) => {
         } = req.body;
 
         const cart = await CartModel.findOne({ user_id: req.params.userId });
-        let total = 0;
 
         if (cart) {
             const product = cart.products.find((p) => p.sku === sku);
 
             if (product) {
-                product.quantity += Number(quantity);
-                product.total = product.quantity * Number(price);
-            } else {
-                cart.products.push({
-                    product_id,
-                    title, size, color, sku, price, quantity, image,
-                    total: Number(quantity) * Number(price),
-
-                });
+                return generateResponse(false, 409, null, 'Product already in cart', res);
+                // product.quantity += Number(quantity);
+                // product.total = product.quantity * Number(price);
             }
+            cart.products.push({
+                product_id,
+                title, size, color, sku, price, quantity, image,
+                total: Number(quantity) * Number(price),
+
+            });
             cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
             await cart.save();
             generateResponse(true, 200, null, 'Product added to cart.', res);
@@ -39,7 +38,7 @@ exports.addToCart = async (req, res, next) => {
                     total: Number(quantity) * Number(price),
 
                 }],
-                cartTotal: total
+                cartTotal: Number(quantity) * Number(price),
             });
             await newCart.save();
             generateResponse(true, 200, null, 'Product added to cart.', res);

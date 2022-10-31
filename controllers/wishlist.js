@@ -12,7 +12,7 @@ exports.addToWishlist = async (req, res, next) => {
             if (isProductExist) {
                 return res.send({
                     success: false,
-                    status: 403,
+                    status: 409,
                     message: 'Product already exists.'
                 });
             } else {
