@@ -16,8 +16,6 @@ exports.addToCart = async (req, res, next) => {
 
             if (product) {
                 return generateResponse(false, 409, null, 'Product already in cart', res);
-                // product.quantity += Number(quantity);
-                // product.total = product.quantity * Number(price);
             }
             cart.products.push({
                 product_id,
@@ -27,7 +25,7 @@ exports.addToCart = async (req, res, next) => {
             });
             cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
             await cart.save();
-            generateResponse(true, 200, null, 'Product added to cart.', res);
+            generateResponse(true, 200, cart, 'Product added to cart.', res);
 
         } else {
             const newCart = new CartModel({
@@ -41,7 +39,7 @@ exports.addToCart = async (req, res, next) => {
                 cartTotal: Number(quantity) * Number(price),
             });
             await newCart.save();
-            generateResponse(true, 200, null, 'Product added to cart.', res);
+            generateResponse(true, 200, newCart, 'Product added to cart.', res);
         }
 
     } catch (error) {
@@ -94,24 +92,16 @@ exports.updateCart = async (req, res, next) => {
 exports.removeCartItem = async (req, res, next) => {
     try {
         const { userId } = req.params;
-        const { index } = req.body;
+        const { cartProductId } = req.body;
 
         const cart = await CartModel.findOne({ user_id: userId });
 
         if (cart) {
-            cart.products.splice(index, 1);
+            cart.products = cart.products.filter((p) => p._id.toString() !== cartProductId);
             cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
-
             await cart.save();
-
-            res.status(200).json({
-                message: 'Cart updated successfully',
-            });
-        } else {
-            res.status(404).json({
-                message: 'Cart not found',
-            });
-        }
+            generateResponse(true, 200, cart, 'Item removed from cart', res);
+        } else generateResponse(false, 404, null, 'Cart not found', res);
     } catch (error) {
         next(error);
     }
