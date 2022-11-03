@@ -64,20 +64,20 @@ exports.getCart = async (req, res, next) => {
 exports.updateCart = async (req, res, next) => {
     try {
         const { userId } = req.params;
-        const { index, quantity } = req.body;
+        const { cartItemId, quantity } = req.body;
 
         const cart = await CartModel.findOne({ user_id: userId });
 
         if (cart) {
-            cart.products[index].quantity = Number(quantity);
-            cart.products[index].total = cart.products[index].price * cart.products[index].quantity;
-            cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
+            const product = cart.products.find((p) => p._id.toString() === cartItemId);
+            if (product) {
+                product.quantity += Number(quantity);
+                product.total = product.quantity * product.price;
+                cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
 
-            await cart.save();
-
-            res.status(200).json({
-                message: 'Cart updated successfully',
-            });
+                await cart.save();
+                return generateResponse(true, 200, cart, 'Cart updated successfully', res);
+            }
         } else {
             res.status(404).json({
                 message: 'Cart not found',
