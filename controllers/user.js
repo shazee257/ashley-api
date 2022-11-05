@@ -59,7 +59,6 @@ exports.registerUser = async (req, res, next) => {
         });
     }
 
-    console.log("req.body >>>>>", req.body);
     const userExisted = await UserModel.findOne({ email: req.body.email });
     if (userExisted) {
         return res.send({
@@ -89,7 +88,7 @@ exports.registerUser = async (req, res, next) => {
                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #e9ecef; display: flex; align-items: center; justify-items: center; max-width: 600px;">
                 <tr>
                   <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                    <p style="margin: 0;">Tap the button below to confirm your email address. If you didn't create an account with <a href="https://e-commerce-nextjs-new.vercel.app/">Furniture Mecca</a>, you can safely delete this email.</p>
+                    <p style="margin: 0;">Tap the button below to confirm your email address. If you didn't create an account with <a href="https://furnituremecca.vercel.app">Furniture Mecca</a>, you can safely delete this email.</p>
                   </td>
                 </tr>
       
@@ -117,7 +116,7 @@ exports.registerUser = async (req, res, next) => {
                 <tr>
                   <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
                     <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
-                    <p style="margin: 0;"><a href="https://e-commerce-nextjs-new.vercel.app/" target="_blank">https://same-link-as-button.url/xxx-xxx-xxxx</a></p>
+                    <p style="margin: 0;"><a href="https://furnituremecca.vercel.app" target="_blank">Furniture Mecca</a></p>
                   </td>
                 </tr>
                 <!-- end copy -->
