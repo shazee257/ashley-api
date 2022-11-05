@@ -21,7 +21,8 @@ app.use(cors({
     origin: [
         'http://localhost:3000',
         'http://localhost:3001',
-        'https://ashley-api.herokuapp.com'
+        'https://ashley-api.herokuapp.com',
+        'https://furnituremecca.vercel.app'
     ],
     credentials: true
 }))
