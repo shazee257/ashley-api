@@ -92,7 +92,6 @@ exports.registerUser = async (req, res, next) => {
                   </td>
                 </tr>
       
-                <!-- start button -->
                 <tr>
                   <td align="left" bgcolor="#ffffff">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -110,18 +109,14 @@ exports.registerUser = async (req, res, next) => {
                     </table>
                   </td>
                 </tr>
-                <!-- end button -->
       
-                <!-- start copy -->
                 <tr>
                   <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
                     <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
                     <p style="margin: 0;"><a href="https://furnituremecca.vercel.app" target="_blank">Furniture Mecca</a></p>
                   </td>
                 </tr>
-                <!-- end copy -->
-      
-                <!-- start copy -->
+
                 <tr>
                   <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
                     <p style="margin: 0;">Regards,<br> Furniture Mecca</p>
