@@ -64,7 +64,7 @@ exports.getCart = async (req, res, next) => {
 exports.updateCart = async (req, res, next) => {
     try {
         const { userId } = req.params;
-        const { cartItemId, operation } = req.body;
+        const { cartItemId, operation, quantity } = req.body;
 
         const cart = await CartModel.findOne({ user_id: userId });
 
@@ -72,10 +72,10 @@ exports.updateCart = async (req, res, next) => {
             const product = cart.products.find((p) => p._id.toString() === cartItemId);
             if (product) {
                 if (operation === 'increment') {
-                    product.quantity += 1;
+                    product.quantity = Number(quantity) + 1;
                     product.total = product.quantity * product.price;
                 } else if (operation === 'decrement') {
-                    product.quantity -= 1;
+                    product.quantity = Number(quantity) - 1;
                     product.total = product.quantity * product.price;
                 }
                 cart.cartTotal = cart.products.reduce((acc, cur) => acc + cur.total, 0);
