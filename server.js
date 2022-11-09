@@ -22,7 +22,8 @@ app.use(cors({
         'http://localhost:3000',
         'http://localhost:3001',
         'https://ashley-api.herokuapp.com',
-        'https://furnituremecca.vercel.app'
+        'https://furnituremecca.vercel.app',
+        'https://macca-dashboard.vercel.app',
     ],
     credentials: true
 }))
