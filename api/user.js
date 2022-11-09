@@ -28,7 +28,8 @@ router.get('/verify-token', verifyAccessToken);
 
 router.get('/:userId', getUser);
 
-router.get('/', loggedIn, getUsers);
+// router.get('/', loggedIn, getUsers);
+router.get('/', getUsers);
 
 router.delete('/:userId', deleteUser);
 
