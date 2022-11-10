@@ -287,12 +287,12 @@ exports.loginUser = async (req, res, next) => {
 
         const authData = { ...userObj, token };
         // set cookie
-        // res.cookie('jToken', token, {
-        //     maxAge: 86_400_000,
-        //     httpOnly: true,
-        //     // secure: false,
-        //     // sameSite: "None"
-        // });
+        res.cookie('jToken', token, {
+            maxAge: 86_400_000,
+            httpOnly: true,
+            // secure: false,
+            // sameSite: "None"
+        });
 
         res.send({
             status: 200,
