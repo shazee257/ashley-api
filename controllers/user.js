@@ -289,7 +289,7 @@ exports.loginUser = async (req, res, next) => {
         // set cookie
         res.cookie('jToken', token, {
             maxAge: 86_400_000,
-            httpOnly: true,
+            // httpOnly: true,
             secure: true,
             // sameSite: "None"
         });
