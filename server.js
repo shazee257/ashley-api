@@ -23,6 +23,7 @@ app.use(cors({
         'http://localhost:3001',
         'https://furnituremecca.vercel.app',
         'https://mecca-dashboard.vercel.app',
+        'https://ashley-dashboard-tw-ctxk.vercel.app'
         // 'https://ashley-api.herokuapp.com',
     ],
     optionsSuccessStatus: 200,
