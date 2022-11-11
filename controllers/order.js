@@ -1,30 +1,37 @@
 const OrderModel = require('../models/order');
 const ProductModel = require('../models/product');
+const UserModel = require('../models/user');
 const { chargeCreditCard } = require('../utils/chargeCreditCard');
 
 // create order
 exports.createOrder = async (req, res, next) => {
+    const customer = {
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: req.body.email,
+        phone: req.body.phone,
+        address: req.body.address,
+        unit: req.body.unit,
+        city: req.body.city,
+        state: req.body.state,
+        zip: req.body.zip,
+        country: req.body.country,
+    }
+
     const {
         // user or customer info
         user_id,
-        customer_name, customer_email, customer_phone,
-
-        // shipping address object
-        shipping_address,
-
         // products and total amount
-        products, shipping_price, total_amount,
-        status
+        products, tax_amount, total_amount
     } = req.body;
 
     try {
         // create order
         const order = new OrderModel({
-            user_id, customer_name, customer_email, customer_phone,
-            shipping_address,
+            user_id,
+            ...customer,
             products,
-            shipping_price, total_amount,
-            status
+            tax_amount, total_amount,
         });
 
         products.forEach(async (p) => {
@@ -37,11 +44,16 @@ exports.createOrder = async (req, res, next) => {
                     ],
                 });
         });
-
+        // create unique order number
+        const orderNumber = await OrderModel.countDocuments() + 1;
+        order.order_number = orderNumber;
         await order.save();
 
+        // find user from user_id   
+        const billingUser = await UserModel.findById(user_id);
+
         // charge credit card
-        chargeCreditCard((response) => {
+        chargeCreditCard(order, billingUser, (response) => {
             if (response.messages.resultCode === "Ok") {
                 res.status(200).json({
                     message: 'Payment received and Order created successfully',
@@ -50,7 +62,6 @@ exports.createOrder = async (req, res, next) => {
                 });
             }
         });
-
     } catch (error) {
         next(error);
     }

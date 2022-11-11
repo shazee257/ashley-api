@@ -1,7 +1,7 @@
 var ApiContracts = require('authorizenet').APIContracts;
 var ApiControllers = require('authorizenet').APIControllers;
 
-function chargeCreditCard(callback) {
+function chargeCreditCard(order, billingUser, callback) {
     var merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
     merchantAuthenticationType.setName('78Z3qyNu');
     merchantAuthenticationType.setTransactionKey('2j4kURA5M4m8cV49');
@@ -15,49 +15,101 @@ function chargeCreditCard(callback) {
     paymentType.setCreditCard(creditCard);
 
     var orderDetails = new ApiContracts.OrderType();
-    orderDetails.setInvoiceNumber('INV-12345');
-    orderDetails.setDescription('Product Description');
+    orderDetails.setInvoiceNumber(order.order_number);
+    orderDetails.setDescription(order.products.length + ' type of products');
+
+    var tax = new ApiContracts.ExtendedAmountType();
+    tax.setAmount(order.tax_amount);
+    tax.setName('Tax');
+    tax.setDescription('Tax');
+
+    // var duty = new ApiContracts.ExtendedAmountType();
+    // duty.setAmount('8.55');
+    // duty.setName('duty name');
+    // duty.setDescription('duty description');
+
+    // var shipping = new ApiContracts.ExtendedAmountType();
+    // shipping.setAmount('8.55');
+    // shipping.setName('shipping name');
+    // shipping.setDescription('shipping description');
 
     var billTo = new ApiContracts.CustomerAddressType();
-    billTo.setFirstName('Ellen');
-    billTo.setLastName('Johnson');
-    billTo.setCompany('Souveniropolis');
-    billTo.setAddress('14 Main Street');
-    billTo.setCity('Pecan Springs');
-    billTo.setState('TX');
-    billTo.setZip('44628');
-    billTo.setCountry('USA');
+    billTo.setFirstName(billingUser.first_name);
+    billTo.setLastName(billingUser.last_name);
+    billTo.setCompany(billingUser.company);
+    billTo.setAddress(billingUser.email);
+    billTo.setCity(billingUser.city);
+    billTo.setState(billingUser.state);
+    billTo.setZip(billingUser.zip);
+    billTo.setCountry(billingUser.country);
+    billTo.setPhoneNumber(billingUser.phone_no);
+    billTo.setFaxNumber(billingUser.fax);
+    billTo.setEmail(billingUser.email);
 
     var shipTo = new ApiContracts.CustomerAddressType();
-    shipTo.setFirstName('China');
-    shipTo.setLastName('Bayles');
-    shipTo.setCompany('Thyme for Tea');
-    shipTo.setAddress('12 Main Street');
-    shipTo.setCity('Pecan Springs');
-    shipTo.setState('TX');
-    shipTo.setZip('44628');
-    shipTo.setCountry('USA');
-
-    var lineItem_id1 = new ApiContracts.LineItemType();
-    lineItem_id1.setItemId('1');
-    lineItem_id1.setName('vase');
-    lineItem_id1.setDescription('cannes logo');
-    lineItem_id1.setQuantity('18');
-    lineItem_id1.setUnitPrice(45.00);
-
-    var lineItem_id2 = new ApiContracts.LineItemType();
-    lineItem_id2.setItemId('2');
-    lineItem_id2.setName('vase2');
-    lineItem_id2.setDescription('cannes logo2');
-    lineItem_id2.setQuantity('28');
-    lineItem_id2.setUnitPrice('25.00');
+    shipTo.setFirstName(order.first_name);
+    shipTo.setLastName(order.last_name);
+    shipTo.setCompany(order.email);
+    shipTo.setAddress(order.address + ", " + order.unit + ", " + order.phone);
+    shipTo.setCity(order.city);
+    shipTo.setState(order.state);
+    shipTo.setZip(order.zip);
+    shipTo.setCountry(order.country);
 
     var lineItemList = [];
-    lineItemList.push(lineItem_id1);
-    lineItemList.push(lineItem_id2);
+    order.products.forEach((p) => {
+        console.log("product: ", p);
+        var lineItem = new ApiContracts.LineItemType();
+        lineItem.setItemId(p.sku);
+        lineItem.setName("Size: " + p.size + ", Color: " + p.color);
+        lineItem.setDescription(p.title);
+        lineItem.setQuantity(p.quantity);
+        lineItem.setUnitPrice(p.price);
+        lineItemList.push(lineItem);
+    });
+
+    // var lineItems = new ApiContracts.ArrayOfLineItem();
+    // lineItems.setLineItem(lineItems);
+
+    // var lineItem_id1 = new ApiContracts.LineItemType();
+    // lineItem_id1.setItemId('1');
+    // lineItem_id1.setName('vase');
+    // lineItem_id1.setDescription('cannes logo');
+    // lineItem_id1.setQuantity('18');
+    // lineItem_id1.setUnitPrice(45.00);
+
+    // var lineItem_id2 = new ApiContracts.LineItemType();
+    // lineItem_id2.setItemId('2');
+    // lineItem_id2.setName('vase2');
+    // lineItem_id2.setDescription('cannes logo2');
+    // lineItem_id2.setQuantity('28');
+    // lineItem_id2.setUnitPrice('25.00');
+
+    // var lineItemList = [];
+    // lineItemList.push(lineItem_id1);
+    // lineItemList.push(lineItem_id2);
 
     var lineItems = new ApiContracts.ArrayOfLineItem();
     lineItems.setLineItem(lineItemList);
+
+
+    // Custom fields
+    // var userField_a = new ApiContracts.UserField();
+    // userField_a.setName('A');
+    // userField_a.setValue('Aval');
+
+    // var userField_b = new ApiContracts.UserField();
+    // userField_b.setName('B');
+    // userField_b.setValue('Bval');
+
+    // var userFieldList = [];
+    // userFieldList.push(userField_a);
+    // userFieldList.push(userField_b);
+
+    // var userFields = new ApiContracts.TransactionRequestType.UserFields();
+    // userFields.setUserField(userFieldList);
+
+
 
     var transactionSetting1 = new ApiContracts.SettingType();
     transactionSetting1.setSettingName('duplicateWindow');
@@ -77,9 +129,11 @@ function chargeCreditCard(callback) {
     var transactionRequestType = new ApiContracts.TransactionRequestType();
     transactionRequestType.setTransactionType(ApiContracts.TransactionTypeEnum.AUTHCAPTURETRANSACTION);
     transactionRequestType.setPayment(paymentType);
-    transactionRequestType.setAmount('101.00');
+    transactionRequestType.setAmount(order.total_amount);
     transactionRequestType.setLineItems(lineItems);
+    // transactionRequestType.setUserFields(userFields);
     transactionRequestType.setOrder(orderDetails);
+    transactionRequestType.setTax(tax);
     transactionRequestType.setBillTo(billTo);
     transactionRequestType.setShipTo(shipTo);
     transactionRequestType.setTransactionSettings(transactionSettings);
@@ -89,7 +143,7 @@ function chargeCreditCard(callback) {
     createRequest.setTransactionRequest(transactionRequestType);
 
     //pretty print request
-    console.log(JSON.stringify(createRequest.getJSON(), null, 2));
+    // console.log(JSON.stringify(createRequest.getJSON(), null, 2));
 
     var ctrl = new ApiControllers.CreateTransactionController(createRequest.getJSON());
 
@@ -121,7 +175,6 @@ function chargeCreditCard(callback) {
             else {
                 console.log('Failed Transaction. ');
                 if (response.getTransactionResponse() != null && response.getTransactionResponse().getErrors() != null) {
-
                     console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode());
                     console.log('Error message: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorText());
                 }
