@@ -2,6 +2,7 @@ const OrderModel = require('../models/order');
 const ProductModel = require('../models/product');
 const UserModel = require('../models/user');
 const { chargeCreditCard } = require('../utils/chargeCreditCard');
+const { generateResponse } = require('../utils/utils');
 
 // create order
 exports.createOrder = async (req, res, next) => {
@@ -17,6 +18,10 @@ exports.createOrder = async (req, res, next) => {
         zip: req.body.zip,
         country: req.body.country,
     }
+
+    console.log("first_name", req.body.first_name);
+
+
 
     const {
         // user or customer info
@@ -49,17 +54,16 @@ exports.createOrder = async (req, res, next) => {
         order.order_number = orderNumber;
         await order.save();
 
+        // console.log("order:  ", order);
+
         // find user from user_id   
         const billingUser = await UserModel.findById(user_id);
 
+        console.log("billingUser:  ", billingUser);
         // charge credit card
         chargeCreditCard(order, billingUser, (response) => {
             if (response.messages.resultCode === "Ok") {
-                res.status(200).json({
-                    message: 'Payment received and Order created successfully',
-                    order,
-                    response,
-                });
+                generateResponse(true, 200, order, 'Payment received and Order created successfully', res);
             }
         });
     } catch (error) {

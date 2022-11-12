@@ -4,13 +4,13 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema(
     {
         // common fields
-        first_name: { type: String },
-        last_name: { type: String },
+        first_name: { type: String, default: '' },
+        last_name: { type: String, default: '' },
         email: { type: String, unique: true, required: true, lowercase: true },
         role: { type: String, enum: ['customer', 'store', 'admin', 'seller', 'user'], default: 'customer' },
-        phone_no: { type: String },
+        phone_no: { type: String, default: '' },
         image: { type: String },
-        alternet_phone_no: String,
+        alternet_phone_no: { type: String, default: '' },
         password: { type: String, required: true },
 
         email_confirmation_token: { type: String },

@@ -33,6 +33,8 @@ function chargeCreditCard(order, billingUser, callback) {
     // shipping.setName('shipping name');
     // shipping.setDescription('shipping description');
 
+    console.log("billingUser: ", billingUser);
+
     var billTo = new ApiContracts.CustomerAddressType();
     billTo.setFirstName(billingUser.first_name);
     billTo.setLastName(billingUser.last_name);
@@ -58,7 +60,6 @@ function chargeCreditCard(order, billingUser, callback) {
 
     var lineItemList = [];
     order.products.forEach((p) => {
-        console.log("product: ", p);
         var lineItem = new ApiContracts.LineItemType();
         lineItem.setItemId(p.sku);
         lineItem.setName("Size: " + p.size + ", Color: " + p.color);
