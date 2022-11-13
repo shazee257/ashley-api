@@ -54,7 +54,7 @@ app.use("/",
         try {
             // console.log("---Request header--", req.headers);
             // console.log("---Request Query---", req.query);
-            // console.log("---Request Body----", req.body);
+            console.log("---Request Body----", req.body);
             // console.log("---Request Path----", req.path);
             // console.log("---Request File----", req.file);
             next();
