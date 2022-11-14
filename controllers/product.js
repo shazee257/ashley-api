@@ -47,6 +47,7 @@ exports.getProducts = async (req, res, next) => {
             .populate('category_id', 'title image slug parent_id discount_image')
             .populate('store_id', 'title banner zip')
             .populate('variants.features.color_id', 'title image')
+            .populate('brand_id', 'title image slug')
             .sort({ createdAt: -1 }).lean();
         res.status(200).json({ success: true, products });
     } catch (error) {
