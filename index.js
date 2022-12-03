@@ -24,7 +24,6 @@ app.use(cors({
         'https://furnituremecca.vercel.app',
         'https://mecca-dashboard.vercel.app',
         'https://ashley-dashboard-tw-ctxk.vercel.app'
-        // 'https://ashley-api.herokuapp.com',
     ],
     optionsSuccessStatus: 200,
     credentials: true
