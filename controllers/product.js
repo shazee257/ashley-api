@@ -93,6 +93,36 @@ exports.uploadImages = async (req, res, next) => {
     }
 }
 
+// re-check the code
+exports.uploadThumbnailImage = async (req, res, next) => {
+    if (!req.files) {
+        return res.status(400).json({
+            message: "No files were uploaded"
+        });
+    }
+
+    try {
+        const product = await ProductModel.findById(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        multiThumbnail(req, "products");
+        const image = req.files[0];
+
+        product.thumbnail_image = image.filename;
+
+        await product.save();
+        res.status(200).json({
+            success: true,
+            message: 'Image uploaded successfully',
+            product
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 // add new feature to product
 exports.addFeature = async (req, res, next) => {
     try {

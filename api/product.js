@@ -10,7 +10,8 @@ const {
     getDiscountedProducts, getDiscountedProductsCategories, getDiscountedProductsInCategory,
     updateProduct, updateVariant, updateFeature,
     uploadImages,
-    getProductsByStoreZipCode
+    getProductsByStoreZipCode,
+    uploadThumbnailImage
 } = require('../controllers/product');
 
 router.post('/', createProduct);
@@ -42,5 +43,6 @@ router.delete('/:productId/:variantId/:featureId', deleteFeature);
 // router.get('/v/:productId', getProductVariants);
 
 router.put('/upload/:productId/:variantId/:featureId', upload("products").array('files', 10), uploadImages);
+router.put('/upload-thumbnail/:productId', upload("products").array('files', 10), uploadThumbnailImage);
 
 module.exports = router;
