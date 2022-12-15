@@ -103,14 +103,18 @@ exports.uploadThumbnailImage = async (req, res, next) => {
 
     try {
         const product = await ProductModel.findById(req.params.productId);
+        console.log('product: ', product);
         if (!product) {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
 
         multiThumbnail(req, "products");
         const image = req.files[0];
+        console.log('image: ', image)
 
-        product.thumbnail_image = image.filename;
+        if (image) {
+            product.thumbnail_image = image.filename;
+        }
 
         await product.save();
         res.status(200).json({
@@ -345,23 +349,27 @@ exports.updateVariant = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
 
-        const variant = product.variants.find((v) => v._id.toString() === req.params.variantId);
-        if (!variant) {
+        let variantIndex = product.variants.findIndex((v) => v._id.toString() === req.params.variantId);
+        if (variantIndex == -1) {
             return res.status(404).json({ success: false, message: 'Variant not found' });
         }
 
-        variant.size = req.body.size;
-        variant.sale_price = req.body.sale_price;
-        variant.purchase_price = req.body.purchase_price;
-        variant.description = req.body.description;
-        variant.dimensions = req.body.dimensions;
+        product.variants[variantIndex].size = req.body.size;
+        product.variants[variantIndex].sale_price = req.body.sale_price;
+        product.variants[variantIndex].purchase_price = req.body.purchase_price;
+        product.variants[variantIndex].description = req.body.description;
+        product.variants[variantIndex].dimensions = req.body.dimensions;
+        product.variants[variantIndex].features = req.body.features;
+
         await product.save();
+
         res.status(200).json({
             success: true,
             message: 'Variant updated successfully',
-            product
+            variant: product.variants[variantIndex]
         });
     } catch (error) {
+        console.log('error: ', getProduct);
         next(error);
     }
 }
