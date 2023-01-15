@@ -11,7 +11,7 @@ const productSchema = new Schema(
         brand_id: { type: Schema.Types.ObjectId, ref: 'brand', required: true },
         store_id: { type: Schema.Types.ObjectId, ref: 'store', required: true },
         is_featured: { type: Boolean, default: false },
-
+        thumbnail_image: String,
         variants: [{
             description: String,
             dimensions: String,
