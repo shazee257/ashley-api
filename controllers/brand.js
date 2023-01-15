@@ -3,14 +3,16 @@ const { thumbnail } = require('../utils/utils');
 
 // create a new brand
 exports.createBrand = async (req, res, next) => {
+    // console.log("req.file", req.file);
     let brandData = {
         title: req.body.title,
         description: req.body.description
     };
 
     if (req.file) {
-        brandData.image = req.file.filename
-        thumbnail(req, "brands");
+        // brandData.image = req.file.filename;
+        brandData.image = req.file.key   // for aws s3 bucket
+        // thumbnail(req, "brands");
     };
 
     try {

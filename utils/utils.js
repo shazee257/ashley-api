@@ -3,8 +3,43 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const sharp = require('sharp');
+const aws = require('aws-sdk');
+const multerS3 = require('multer-s3');
 
 const sensitiveKeys = ["password", "salt", "is_deleted", "updatedAt", "__v"];
+
+const s3 = new aws.S3({
+  accessKeyId: 'AKIAUZOKLKY3A6WQF2LT',
+  secretAccessKey: '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',
+  // Bucket: 'mecca-upload-bucket'
+});
+
+exports.uploadS3 = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'mecca-upload-bucket/brands',
+    acl: 'public-read',
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString() + path.extname(file.originalname))
+    }
+  })
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Config
 const storage = multer.diskStorage({
@@ -126,3 +161,4 @@ exports.generateResponse = (success, statusCode, data, message, res) => {
     message
   });
 }
+
